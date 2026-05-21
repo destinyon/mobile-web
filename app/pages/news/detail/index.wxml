@@ -1,0 +1,36 @@
+<view class="page-shell">
+  <view wx:if="{{loading}}" class="state-box">正在加载详情...</view>
+  <view wx:elif="{{error}}" class="state-box" bindtap="loadDetail">{{error}}，点击重试</view>
+  <view wx:else>
+    <image wx:if="{{detail.coverUrl || detail.cover || detail.imageUrl}}" class="cover" src="{{detail.coverUrl || detail.cover || detail.imageUrl}}" mode="aspectFill"></image>
+    <view class="article">
+      <view class="title">{{detail.title}}</view>
+      <view class="meta">
+        <text>{{detail.categoryName || detail.category || '羽球资讯'}}</text>
+        <text>{{detail.createdAt || detail.createTime || ''}}</text>
+      </view>
+      <rich-text class="content" nodes="{{contentNodes}}"></rich-text>
+    </view>
+
+    <view class="actions">
+      <button class="action-btn" bindtap="onLike">赞 {{detail.likeCount || detail.likes || 0}}</button>
+      <button class="action-btn" bindtap="onFavorite">{{detail.favorited || detail.favorite ? '已收藏' : '收藏'}}</button>
+    </view>
+
+    <view class="comment-box">
+      <textarea class="comment-input" value="{{commentContent}}" placeholder="写下你的看法" maxlength="300" bindinput="onCommentInput"></textarea>
+      <button class="primary-btn" loading="{{submitting}}" bindtap="submitComment">发表评论</button>
+    </view>
+
+    <view class="section-title">评论</view>
+    <view wx:if="{{comments.length}}" class="comments">
+      <view wx:for="{{comments}}" wx:key="id" class="comment-item">
+        <view class="comment-head">{{item.nickname || item.userName || '球友'}}</view>
+        <view class="comment-content">{{item.content}}</view>
+      </view>
+    </view>
+    <view wx:else class="state-box">暂无评论</view>
+  </view>
+
+  <auth-popup visible="{{showAuth}}" bind:cancel="hideAuth" bind:success="afterLogin"></auth-popup>
+</view>

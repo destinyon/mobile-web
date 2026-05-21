@@ -1,0 +1,10 @@
+<view class="page-shell">
+  <view class="section-title">我的收藏</view>
+  <view wx:if="{{loading}}" class="state-box">正在加载...</view>
+  <view wx:elif="{{error}}" class="state-box" bindtap="load">{{error}}，点击重试</view>
+  <view wx:elif="{{!items.length}}" class="state-box">还没有收藏新闻</view>
+  <view wx:else class="news-list">
+    <news-card wx:for="{{items}}" wx:key="id" item="{{item.news || item}}"></news-card>
+  </view>
+  <auth-popup visible="{{showAuth}}" bind:cancel="hideAuth" bind:success="afterLogin"></auth-popup>
+</view>

@@ -1,0 +1,32 @@
+.search-bar {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 28rpx;
+}
+
+.search-input {
+  flex: 1;
+  min-height: 78rpx;
+  padding: 0 24rpx;
+  border: 2rpx solid #172117;
+  border-radius: 16rpx;
+  background: #ffffff;
+  font-size: 28rpx;
+}
+
+.search-btn {
+  width: 132rpx;
+  min-height: 78rpx;
+  border: 2rpx solid #172117;
+  border-radius: 16rpx;
+  background: #baf279;
+  color: #172117;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22rpx;
+}

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "羽球在线",
+  "usingComponents": {
+    "news-card": "/components/news-card/index"
+  },
+  "enablePullDownRefresh": true
+}

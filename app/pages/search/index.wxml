@@ -1,0 +1,15 @@
+<view class="page-shell">
+  <view class="search-bar">
+    <input class="search-input" value="{{keyword}}" placeholder="输入关键词" confirm-type="search" bindinput="onInput" bindconfirm="onSearch" />
+    <button class="search-btn" bindtap="onSearch">搜索</button>
+  </view>
+
+  <view wx:if="{{loading}}" class="state-box">正在搜索...</view>
+  <view wx:elif="{{error}}" class="state-box" bindtap="onSearch">{{error}}，点击重试</view>
+  <view wx:elif="{{searched && !newsList.length}}" class="state-box">没有找到相关新闻</view>
+  <view wx:elif="{{!searched}}" class="state-box">搜索羽球新闻、赛事和训练内容</view>
+
+  <view wx:else class="news-list">
+    <news-card wx:for="{{newsList}}" wx:key="id" item="{{item}}"></news-card>
+  </view>
+</view>

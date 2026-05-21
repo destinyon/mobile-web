@@ -1,0 +1,21 @@
+.idea/
+.vscode/
+.DS_Store
+
+# Local environment and secrets
+.env
+backend/.env
+app/.env
+
+# Build outputs
+target/
+dist/
+node_modules/
+
+# Runtime data
+backend/data/
+backend/logs/
+
+# WeChat developer tool local state
+app/miniprogram_npm/
+app/project.private.config.json

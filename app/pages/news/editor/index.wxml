@@ -1,0 +1,15 @@
+<view class="page-shell">
+  <view class="brand-bar">
+    <view class="brand-title">发布羽球内容</view>
+  </view>
+
+  <view class="form card">
+    <input class="field" value="{{form.title}}" placeholder="标题" bindinput="onField" data-key="title" />
+    <input class="field" value="{{form.coverUrl}}" placeholder="封面图片 URL" bindinput="onField" data-key="coverUrl" />
+    <textarea class="textarea" value="{{form.summary}}" placeholder="摘要" maxlength="120" bindinput="onField" data-key="summary"></textarea>
+    <textarea class="textarea content" value="{{form.content}}" placeholder="正文内容" bindinput="onField" data-key="content"></textarea>
+    <button class="primary-btn" loading="{{submitting}}" bindtap="submit">提交发布</button>
+  </view>
+
+  <auth-popup visible="{{showAuth}}" bind:cancel="hideAuth" bind:success="afterLogin"></auth-popup>
+</view>

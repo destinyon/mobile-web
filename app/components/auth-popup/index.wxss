@@ -1,0 +1,55 @@
+.mask {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 32rpx;
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.panel {
+  width: 100%;
+  padding: 38rpx 32rpx 32rpx;
+  border: 2rpx solid #172117;
+  border-radius: 20rpx;
+  background: #fafff3;
+  box-shadow: 8rpx 8rpx 0 #172117;
+}
+
+.panel-title {
+  color: #172117;
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.panel-desc {
+  margin: 18rpx 0 30rpx;
+  color: #65705f;
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+.login-btn,
+.cancel-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 82rpx;
+  border: 2rpx solid #172117;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.login-btn {
+  background: #baf279;
+  color: #172117;
+}
+
+.cancel-btn {
+  margin-top: 18rpx;
+  background: #ffffff;
+  color: #5d6657;
+}

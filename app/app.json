@@ -1,0 +1,38 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/news/detail/index",
+    "pages/news/list/index",
+    "pages/news/editor/index",
+    "pages/search/index",
+    "pages/mine/index/index",
+    "pages/mine/favorites/index",
+    "pages/mine/comments/index",
+    "pages/mine/posts/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "羽球在线",
+    "navigationBarBackgroundColor": "#f4fee9",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f4fee9",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#5d6657",
+    "selectedColor": "#0f2514",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/mine/index/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

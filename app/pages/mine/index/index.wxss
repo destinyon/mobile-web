@@ -1,0 +1,78 @@
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 26rpx;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 118rpx;
+  width: 118rpx;
+  height: 118rpx;
+  border: 2rpx solid #172117;
+  border-radius: 50%;
+  background: #dff5c9;
+}
+
+.avatar-placeholder {
+  color: #172117;
+  font-size: 46rpx;
+  font-weight: 900;
+}
+
+.profile-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  margin-bottom: 10rpx;
+  color: #172117;
+  font-size: 34rpx;
+  font-weight: 900;
+}
+
+.login-mini {
+  min-width: 110rpx;
+  min-height: 58rpx;
+  border: 2rpx solid #172117;
+  border-radius: 999rpx;
+  background: #baf279;
+  color: #172117;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin-top: 30rpx;
+}
+
+.grid-item {
+  min-height: 176rpx;
+  padding: 24rpx;
+  border: 2rpx solid #172117;
+  border-radius: 16rpx;
+  background: #ffffff;
+  color: #172117;
+  font-size: 28rpx;
+  font-weight: 800;
+  box-shadow: 6rpx 6rpx 0 rgba(23, 33, 23, 0.18);
+}
+
+.grid-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58rpx;
+  height: 58rpx;
+  margin-bottom: 18rpx;
+  border: 2rpx solid #172117;
+  border-radius: 16rpx;
+  background: #f4fee9;
+}

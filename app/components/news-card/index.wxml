@@ -1,0 +1,11 @@
+<view class="news-card" bindtap="onTap">
+  <image class="cover" src="{{item.coverUrl || item.cover || item.imageUrl || item.image}}" mode="aspectFill"></image>
+  <view class="body">
+    <view class="title">{{item.title}}</view>
+    <view class="summary">{{item.summary || item.description || item.contentText || '点击查看详情'}}</view>
+    <view class="meta">
+      <text>{{item.categoryName || item.category || '羽球资讯'}}</text>
+      <text>{{item.viewCount || item.views || 0}} 阅读</text>
+    </view>
+  </view>
+</view>

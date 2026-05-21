@@ -1,0 +1,26 @@
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.comment-card {
+  padding: 24rpx;
+  border: 2rpx solid #172117;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 6rpx 6rpx 0 rgba(23, 33, 23, 0.18);
+}
+
+.comment-title {
+  color: #172117;
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.comment-content {
+  margin: 14rpx 0;
+  color: #3d493a;
+  font-size: 27rpx;
+  line-height: 1.6;
+}

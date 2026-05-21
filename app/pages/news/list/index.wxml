@@ -1,0 +1,14 @@
+<view class="page-shell">
+  <view class="section-title">
+    <text>{{title}}</text>
+    <text class="muted">{{total ? total + ' 条' : ''}}</text>
+  </view>
+
+  <view wx:if="{{loading && !newsList.length}}" class="state-box">正在加载...</view>
+  <view wx:elif="{{error}}" class="state-box" bindtap="reload">{{error}}，点击重试</view>
+  <view wx:elif="{{!newsList.length}}" class="state-box">暂无内容</view>
+  <view wx:else class="news-list">
+    <news-card wx:for="{{newsList}}" wx:key="id" item="{{item}}"></news-card>
+  </view>
+  <view wx:if="{{newsList.length}}" class="load-more muted">{{hasMore ? '上拉加载更多' : '没有更多了'}}</view>
+</view>

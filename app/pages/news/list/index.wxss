@@ -1,0 +1,10 @@
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22rpx;
+}
+
+.load-more {
+  padding: 30rpx 0 8rpx;
+  text-align: center;
+}

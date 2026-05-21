@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "新闻列表",
+  "usingComponents": {
+    "news-card": "/components/news-card/index"
+  },
+  "enablePullDownRefresh": true
+}

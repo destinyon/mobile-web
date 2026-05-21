@@ -1,0 +1,3 @@
+app:
+  oss:
+    sync-demo-assets: false

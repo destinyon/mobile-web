@@ -1,0 +1,8 @@
+<view wx:if="{{visible}}" class="mask">
+  <view class="panel">
+    <view class="panel-title">登录后继续</view>
+    <view class="panel-desc">收藏、点赞、评论和发布内容需要微信授权登录。</view>
+    <button class="login-btn" loading="{{loading}}" bindtap="onLogin">微信一键登录</button>
+    <button class="cancel-btn" bindtap="onCancel">暂不登录</button>
+  </view>
+</view>

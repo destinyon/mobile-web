@@ -1,14 +1,20 @@
-<view class="page-shell">
+<view class="page-shell detail-shell">
   <view wx:if="{{loading}}" class="state-box">正在加载详情...</view>
   <view wx:elif="{{error}}" class="state-box" bindtap="loadDetail">{{error}}，点击重试</view>
   <view wx:else>
-    <image wx:if="{{detail.coverUrl || detail.cover || detail.imageUrl}}" class="cover" src="{{detail.coverUrl || detail.cover || detail.imageUrl}}" mode="aspectFill"></image>
+    <view class="brand-strip">
+      <text class="back" bindtap="goBack">‹</text>
+      <text class="brand-title-mini">文章详情</text>
+    </view>
+
     <view class="article">
       <view class="title">{{detail.title}}</view>
       <view class="meta">
         <text>{{detail.categoryName || detail.category || '羽球资讯'}}</text>
-        <text>{{detail.createdAt || detail.createTime || ''}}</text>
+        <text>{{detail.author || '羽球在线'}}</text>
+        <text>{{detail.viewCount || 0}} 阅读</text>
       </view>
+      <image wx:if="{{detail.coverUrl || detail.cover || detail.imageUrl}}" class="cover" src="{{detail.coverUrl || detail.cover || detail.imageUrl}}" mode="aspectFill"></image>
       <rich-text class="content" nodes="{{contentNodes}}"></rich-text>
     </view>
 
@@ -22,7 +28,7 @@
       <button class="primary-btn" loading="{{submitting}}" bindtap="submitComment">发表评论</button>
     </view>
 
-    <view class="section-title">评论</view>
+    <view class="section-title">评论区</view>
     <view wx:if="{{comments.length}}" class="comments">
       <view wx:for="{{comments}}" wx:key="id" class="comment-item">
         <view class="comment-head">{{item.nickname || item.userName || '球友'}}</view>

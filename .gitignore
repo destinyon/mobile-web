@@ -15,6 +15,7 @@ node_modules/
 # Runtime data
 backend/data/
 backend/logs/
+*.err.log
 
 # WeChat developer tool local state
 app/miniprogram_npm/

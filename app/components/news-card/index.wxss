@@ -1,33 +1,33 @@
 .news-card {
   display: flex;
-  min-height: 188rpx;
-  padding: 16rpx;
+  min-height: 156rpx;
+  padding: 10rpx;
   border: 2rpx solid #172117;
-  border-radius: 16rpx;
+  border-radius: 6rpx;
   background: #ffffff;
-  box-shadow: 6rpx 6rpx 0 rgba(23, 33, 23, 0.18);
+  box-shadow: 4rpx 4rpx 0 rgba(23, 33, 23, 0.16);
 }
 
 .cover {
-  flex: 0 0 210rpx;
-  width: 210rpx;
-  height: 156rpx;
+  flex: 0 0 184rpx;
+  width: 184rpx;
+  height: 136rpx;
   border: 2rpx solid #172117;
-  border-radius: 10rpx;
+  border-radius: 4rpx;
   background: #e7f6d8;
 }
 
 .body {
   flex: 1;
   min-width: 0;
-  padding-left: 18rpx;
+  padding-left: 14rpx;
 }
 
 .title {
   display: -webkit-box;
   overflow: hidden;
   color: #172117;
-  font-size: 30rpx;
+  font-size: 27rpx;
   font-weight: 800;
   line-height: 1.35;
   text-overflow: ellipsis;
@@ -38,20 +38,20 @@
 .summary {
   display: -webkit-box;
   overflow: hidden;
-  margin-top: 10rpx;
+  margin-top: 6rpx;
   color: #65705f;
-  font-size: 24rpx;
+  font-size: 22rpx;
   line-height: 1.45;
   text-overflow: ellipsis;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
 }
 
 .meta {
   display: flex;
   justify-content: space-between;
   gap: 12rpx;
-  margin-top: 12rpx;
+  margin-top: 8rpx;
   color: #7b8673;
   font-size: 22rpx;
 }

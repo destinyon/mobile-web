@@ -1,4 +1,7 @@
 <view class="page-shell">
+  <view class="brand-strip">
+    <text class="brand-title-mini">搜索资讯</text>
+  </view>
   <view class="search-bar">
     <input class="search-input" value="{{keyword}}" placeholder="输入关键词" confirm-type="search" bindinput="onInput" bindconfirm="onSearch" />
     <button class="search-btn" bindtap="onSearch">搜索</button>

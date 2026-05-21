@@ -1,10 +1,13 @@
-<view class="page-shell">
+<view class="page-shell home-shell">
   <view class="brand-bar">
     <view class="brand-title"><text class="brand-mark">羽</text>羽球在线</view>
     <button class="publish-link" bindtap="goPublish">发布</button>
   </view>
 
-  <view class="search-entry" bindtap="goSearch">搜索赛事、装备、训练技巧</view>
+  <view class="search-entry" bindtap="goSearch">
+    <text class="search-icon">⌕</text>
+    <text>搜索赛事、装备、训练技巧</text>
+  </view>
 
   <swiper wx:if="{{banners.length}}" class="banner" indicator-dots autoplay circular>
     <swiper-item wx:for="{{banners}}" wx:key="id">
@@ -20,7 +23,7 @@
   </scroll-view>
 
   <view class="section-title">
-    <text>最新资讯</text>
+    <text>近期热点咨询：</text>
     <text class="muted">{{total ? total + ' 条' : ''}}</text>
   </view>
 

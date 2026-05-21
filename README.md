@@ -1,12 +1,12 @@
 # mobile-web
 
-羽球在线：羽毛球新闻论坛微信小程序及 Spring Boot 后端。
+羽球在线：羽毛球新闻、评论、收藏与内容发布微信小程序，配套 Spring Boot 后端。
 
 ## Modules
 
-- `backend/`: REST API, H2 file database, OSS upload, WeChat login, admin APIs.
-- `app/`: native WeChat Mini Program pages and services.
-- `docs/`: API and iteration notes.
+- `backend/`: REST API、H2 文件数据库、OSS 上传、微信登录、聚合新闻同步和后台接口。
+- `app/`: 原生微信小程序页面、组件和接口服务。
+- `docs/`: 接口文档和迭代说明。
 
 ## Backend
 
@@ -16,12 +16,12 @@ mvn test
 mvn spring-boot:run
 ```
 
-Default API base URL: `http://localhost:8080/api`.
+默认接口地址：`http://127.0.0.1:8080/api`。
 
-Runtime secrets are loaded from `backend/.env`, which is ignored by Git.
+运行时密钥从 `backend/.env` 读取，该文件已被 `.gitignore` 忽略。
 
 ## Mini Program
 
-Open `app/` in WeChat Developer Tools. The AppID is configured in `app/project.config.json`.
+在微信开发者工具中打开 `app/`。小程序 AppID 位于 `app/project.config.json`。
 
-The Mini Program calls the backend configured in `app/utils/constants.js`.
+小程序后端地址在 `app/utils/constants.js` 中配置。

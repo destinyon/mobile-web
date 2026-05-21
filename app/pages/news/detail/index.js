@@ -43,6 +43,15 @@ Page({
       .finally(() => this.setData({ loading: false }));
   },
 
+  goBack() {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.switchTab({ url: '/pages/home/index' });
+    }
+  },
+
   onLike() {
     this.runProtected('like');
   },
@@ -74,7 +83,7 @@ Page({
       },
       comment: () => {
         this.setData({ submitting: true });
-        return api.createComment({ newsId: this.data.id, content: this.data.commentContent.trim() });
+        return api.createComment({ targetType: 'NEWS', targetId: this.data.id, content: this.data.commentContent.trim() });
       }
     };
 

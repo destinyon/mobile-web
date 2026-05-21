@@ -7,6 +7,8 @@ import com.server.backend.common.BusinessException;
 import com.server.backend.common.PageResult;
 import com.server.backend.news.NewsService;
 import com.server.backend.news.NewsSummary;
+import com.server.backend.news.juhe.JuheNewsSyncResult;
+import com.server.backend.news.juhe.JuheNewsSyncService;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +18,17 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     private final AuthService authService;
     private final NewsService newsService;
+    private final JuheNewsSyncService juheNewsSyncService;
     private final JdbcTemplate jdbcTemplate;
 
-    public AdminController(AuthService authService, NewsService newsService, JdbcTemplate jdbcTemplate) {
+    public AdminController(
+            AuthService authService,
+            NewsService newsService,
+            JuheNewsSyncService juheNewsSyncService,
+            JdbcTemplate jdbcTemplate) {
         this.authService = authService;
         this.newsService = newsService;
+        this.juheNewsSyncService = juheNewsSyncService;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -44,6 +52,12 @@ public class AdminController {
         jdbcTemplate.update("INSERT INTO admin_logs(admin_id, action, target_type, target_id) VALUES(?, ?, 'NEWS', ?)",
                 admin.id(), "UPDATE_STATUS_" + status.toUpperCase(), id);
         return ApiResponse.ok(null);
+    }
+
+    @PostMapping("/news/sync/juhe")
+    public ApiResponse<JuheNewsSyncResult> syncJuheNews(@RequestHeader("Authorization") String authorization) {
+        requireAdmin(authorization);
+        return ApiResponse.ok(juheNewsSyncService.sync());
     }
 
     private AuthUser requireAdmin(String authorization) {

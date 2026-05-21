@@ -1,3 +1,12 @@
 app:
+  jwt-secret: test-secret
   oss:
     sync-demo-assets: false
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    public-base-url: https://example.test
+    bucket: test-bucket
+    access-key-id: test-access-key
+    access-key-secret: test-access-secret
+  wx:
+    app-id: test-app-id
+    app-secret: test-app-secret

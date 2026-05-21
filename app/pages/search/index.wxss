@@ -1,24 +1,39 @@
+.brand-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64rpx;
+  margin-bottom: 16rpx;
+  border: 2rpx solid #172117;
+  background: #fafff3;
+}
+
+.brand-title-mini {
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
 .search-bar {
   display: flex;
-  gap: 16rpx;
-  margin-bottom: 28rpx;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
 }
 
 .search-input {
   flex: 1;
-  min-height: 78rpx;
+  min-height: 72rpx;
   padding: 0 24rpx;
   border: 2rpx solid #172117;
-  border-radius: 16rpx;
+  border-radius: 6rpx;
   background: #ffffff;
   font-size: 28rpx;
 }
 
 .search-btn {
-  width: 132rpx;
-  min-height: 78rpx;
+  width: 126rpx;
+  min-height: 72rpx;
   border: 2rpx solid #172117;
-  border-radius: 16rpx;
+  border-radius: 6rpx;
   background: #baf279;
   color: #172117;
   font-size: 28rpx;
@@ -28,5 +43,5 @@
 .news-list {
   display: flex;
   flex-direction: column;
-  gap: 22rpx;
+  gap: 14rpx;
 }

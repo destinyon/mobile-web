@@ -1,52 +1,76 @@
-.cover {
-  width: 100%;
-  height: 360rpx;
+.brand-strip {
+  display: flex;
+  align-items: center;
+  height: 64rpx;
+  margin-bottom: 14rpx;
   border: 2rpx solid #172117;
-  border-radius: 18rpx;
-  background: #dff5c9;
+  background: #fafff3;
+}
+
+.back {
+  width: 62rpx;
+  text-align: center;
+  font-size: 44rpx;
+  line-height: 1;
+}
+
+.brand-title-mini {
+  flex: 1;
+  padding-right: 62rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 800;
 }
 
 .article {
-  margin-top: 24rpx;
-  padding: 30rpx 28rpx;
+  padding: 18rpx;
   border: 2rpx solid #172117;
-  border-radius: 18rpx;
+  border-radius: 6rpx;
   background: #ffffff;
 }
 
 .title {
   color: #172117;
-  font-size: 40rpx;
+  font-size: 34rpx;
   font-weight: 900;
   line-height: 1.35;
 }
 
 .meta {
   display: flex;
-  justify-content: space-between;
-  gap: 20rpx;
-  margin: 18rpx 0 28rpx;
+  flex-wrap: wrap;
+  gap: 12rpx 22rpx;
+  margin: 14rpx 0 16rpx;
   color: #65705f;
   font-size: 24rpx;
 }
 
+.cover {
+  width: 100%;
+  height: 330rpx;
+  margin: 8rpx 0 18rpx;
+  border: 2rpx solid #172117;
+  border-radius: 6rpx;
+  background: #dff5c9;
+}
+
 .content {
   color: #283227;
-  font-size: 30rpx;
-  line-height: 1.85;
+  font-size: 29rpx;
+  line-height: 1.75;
 }
 
 .actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18rpx;
-  margin-top: 24rpx;
+  gap: 12rpx;
+  margin-top: 14rpx;
 }
 
 .action-btn {
-  min-height: 76rpx;
+  min-height: 68rpx;
   border: 2rpx solid #172117;
-  border-radius: 16rpx;
+  border-radius: 6rpx;
   background: #ffffff;
   color: #172117;
   font-size: 28rpx;
@@ -54,10 +78,10 @@
 }
 
 .comment-box {
-  margin-top: 28rpx;
-  padding: 24rpx;
+  margin-top: 16rpx;
+  padding: 16rpx;
   border: 2rpx solid #172117;
-  border-radius: 18rpx;
+  border-radius: 6rpx;
   background: #ffffff;
 }
 
@@ -66,7 +90,7 @@
   min-height: 150rpx;
   padding: 18rpx;
   border: 2rpx solid #d6dfcf;
-  border-radius: 14rpx;
+  border-radius: 6rpx;
   font-size: 28rpx;
 }
 
@@ -77,13 +101,13 @@
 .comments {
   display: flex;
   flex-direction: column;
-  gap: 18rpx;
+  gap: 12rpx;
 }
 
 .comment-item {
-  padding: 22rpx;
+  padding: 18rpx;
   border: 2rpx solid #172117;
-  border-radius: 16rpx;
+  border-radius: 6rpx;
   background: #ffffff;
 }
 

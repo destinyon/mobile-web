@@ -16,7 +16,12 @@ node_modules/
 backend/data/
 backend/logs/
 *.err.log
+.superpowers/
+.codex-dev/
 
 # WeChat developer tool local state
 app/miniprogram_npm/
 app/project.private.config.json
+
+screenshots/
+docs/

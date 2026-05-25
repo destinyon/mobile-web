@@ -7,6 +7,10 @@ spring:
 
 app:
   jwt-secret: test-secret
+  admin:
+    username: admin
+    password: secret
+    user-id: 2
   oss:
     sync-demo-assets: false
     endpoint: https://oss-cn-beijing.aliyuncs.com

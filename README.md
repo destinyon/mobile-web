@@ -19,6 +19,7 @@ mvn spring-boot:run
 默认接口地址：`http://127.0.0.1:8080/api`。
 
 运行时密钥从 `backend/.env` 读取，该文件已被 `.gitignore` 忽略。
+后台管理员登录需要配置 `ADMIN_USERNAME`、`ADMIN_PASSWORD`，可选配置 `ADMIN_USER_ID` 绑定已有 `ADMIN` 用户。
 
 ## Mini Program
 

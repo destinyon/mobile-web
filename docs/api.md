@@ -84,8 +84,17 @@
 ## 登录与上传
 
 - `POST /api/auth/wx-login`
+- `POST /api/auth/admin-login`
 - `POST /api/upload`
 - `DELETE /api/upload?objectKey=uploads/example.jpg`
+
+管理员登录用于后台网站，不提供注册接口。请求体：
+
+```json
+{ "username": "admin", "password": "your-admin-password" }
+```
+
+成功返回与小程序登录一致的 `LoginResult`。后端从 `ADMIN_USERNAME`、`ADMIN_PASSWORD`、`ADMIN_USER_ID` 读取唯一管理员配置；密码未配置时返回 503，账号或密码错误时返回 401。
 
 上传和删除均需要登录。删除只接受 OSS object key，不接受完整 URL。
 

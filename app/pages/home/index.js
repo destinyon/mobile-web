@@ -23,6 +23,12 @@ Page({
     this.loadAll();
   },
 
+  onShow() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 0 });
+    }
+  },
+
   onPullDownRefresh() {
     this.loadAll().finally(() => wx.stopPullDownRefresh());
   },
@@ -75,8 +81,8 @@ Page({
     wx.navigateTo({ url: '/pages/search/index' });
   },
 
-  goPublish() {
-    wx.navigateTo({ url: '/pages/news/editor/index' });
+  goCommunity() {
+    wx.switchTab({ url: '/pages/community/index' });
   },
 
   onBannerTap(event) {

@@ -1,3 +1,14 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS news;
+DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS topics;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS favorites;
+DROP TABLE IF EXISTS likes;
+DROP TABLE IF EXISTS banners;
+DROP TABLE IF EXISTS admin_logs;
+
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     openid VARCHAR(128) NOT NULL UNIQUE,
@@ -24,11 +35,11 @@ CREATE TABLE IF NOT EXISTS news (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     category_id BIGINT,
     user_id BIGINT,
-    title VARCHAR(200) NOT NULL,
+    title VARCHAR(500) NOT NULL,
     cover_url VARCHAR(512) NOT NULL,
     summary VARCHAR(500),
     author VARCHAR(80) NOT NULL,
-    content CLOB NOT NULL,
+    content LONGTEXT NOT NULL,
     media_url VARCHAR(512),
     media_type VARCHAR(20) NOT NULL DEFAULT 'IMAGE',
     source VARCHAR(40),
@@ -41,12 +52,32 @@ CREATE TABLE IF NOT EXISTS news (
     status VARCHAR(20) NOT NULL DEFAULT 'PUBLISHED',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(source, source_id)
+    UNIQUE KEY uk_news_source (source, source_id)
 );
 
-ALTER TABLE news ADD COLUMN IF NOT EXISTS source VARCHAR(40);
-ALTER TABLE news ADD COLUMN IF NOT EXISTS source_id VARCHAR(128);
-ALTER TABLE news ADD COLUMN IF NOT EXISTS source_url VARCHAR(512);
+CREATE TABLE IF NOT EXISTS topics (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(40) NOT NULL,
+    description VARCHAR(160),
+    sort_no INT NOT NULL DEFAULT 0,
+    status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE'
+);
+
+CREATE TABLE IF NOT EXISTS posts (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    topic_id BIGINT,
+    user_id BIGINT NOT NULL,
+    title VARCHAR(120) NOT NULL,
+    content LONGTEXT NOT NULL,
+    images VARCHAR(2000),
+    view_count INT NOT NULL DEFAULT 0,
+    like_count INT NOT NULL DEFAULT 0,
+    favorite_count INT NOT NULL DEFAULT 0,
+    comment_count INT NOT NULL DEFAULT 0,
+    status VARCHAR(20) NOT NULL DEFAULT 'PUBLISHED',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE IF NOT EXISTS comments (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -65,7 +96,7 @@ CREATE TABLE IF NOT EXISTS favorites (
     target_type VARCHAR(20) NOT NULL,
     target_id BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id, target_type, target_id)
+    UNIQUE KEY uk_favorites_target (user_id, target_type, target_id)
 );
 
 CREATE TABLE IF NOT EXISTS likes (
@@ -74,7 +105,7 @@ CREATE TABLE IF NOT EXISTS likes (
     target_type VARCHAR(20) NOT NULL,
     target_id BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id, target_type, target_id)
+    UNIQUE KEY uk_likes_target (user_id, target_type, target_id)
 );
 
 CREATE TABLE IF NOT EXISTS banners (

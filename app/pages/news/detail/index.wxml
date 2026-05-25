@@ -14,7 +14,6 @@
         <text>{{detail.author || '羽球在线'}}</text>
         <text>{{detail.viewCount || 0}} 阅读</text>
       </view>
-      <image wx:if="{{detail.coverUrl || detail.cover || detail.imageUrl}}" class="cover" src="{{detail.coverUrl || detail.cover || detail.imageUrl}}" mode="aspectFill"></image>
       <rich-text class="content" nodes="{{contentNodes}}"></rich-text>
     </view>
 
@@ -24,15 +23,27 @@
     </view>
 
     <view class="comment-box">
-      <textarea class="comment-input" value="{{commentContent}}" placeholder="写下你的看法" maxlength="300" bindinput="onCommentInput"></textarea>
-      <button class="primary-btn" loading="{{submitting}}" bindtap="submitComment">发表评论</button>
+      <view wx:if="{{replyTarget.id}}" class="reply-tip">
+        回复 {{replyTarget.nickname || '球友'}}
+        <button bindtap="cancelReply">取消</button>
+      </view>
+      <textarea class="comment-input" value="{{commentContent}}" placeholder="{{replyTarget.id ? '写下回复' : '写下你的看法'}}" maxlength="300" bindinput="onCommentInput"></textarea>
+      <button class="primary-btn" loading="{{submitting}}" bindtap="submitComment">{{replyTarget.id ? '发表回复' : '发表评论'}}</button>
     </view>
 
     <view class="section-title">评论区</view>
     <view wx:if="{{comments.length}}" class="comments">
       <view wx:for="{{comments}}" wx:key="id" class="comment-item">
-        <view class="comment-head">{{item.nickname || item.userName || '球友'}}</view>
+        <view class="comment-head">
+          <text>{{item.nickname || item.userName || '球友'}}</text>
+          <button bindtap="startReply" data-comment="{{item}}">回复</button>
+        </view>
         <view class="comment-content">{{item.content}}</view>
+        <view wx:if="{{item.replies && item.replies.length}}" class="reply-list">
+          <view wx:for="{{item.replies}}" wx:key="id" class="reply-item">
+            <text class="reply-name">{{item.nickname || '球友'}}：</text>{{item.content}}
+          </view>
+        </view>
       </view>
     </view>
     <view wx:else class="state-box">暂无评论</view>

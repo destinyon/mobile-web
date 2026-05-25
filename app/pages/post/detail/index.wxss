@@ -1,0 +1,75 @@
+@import "../../news/detail/index.wxss";
+
+.post {
+  padding: 20rpx;
+  border-radius: 8rpx;
+}
+
+.topic {
+  display: inline-flex;
+  min-height: 48rpx;
+  padding: 0 18rpx;
+  align-items: center;
+  border: 2rpx solid #172117;
+  border-radius: 999rpx;
+  background: #baf279;
+  color: #172117;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.image-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+  margin-top: 18rpx;
+}
+
+.post-image {
+  width: 100%;
+  border: 2rpx solid #172117;
+  border-radius: 8rpx;
+}
+
+.reply-tip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+  color: #65705f;
+  font-size: 24rpx;
+}
+
+.reply-tip button,
+.comment-head button {
+  color: #172117;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.comment-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reply-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  margin-top: 12rpx;
+  padding: 12rpx;
+  border-radius: 8rpx;
+  background: #f4fee9;
+}
+
+.reply-item {
+  color: #3d493a;
+  font-size: 25rpx;
+  line-height: 1.5;
+}
+
+.reply-name {
+  color: #172117;
+  font-weight: 800;
+}

@@ -1,6 +1,6 @@
 package com.server.backend.config;
 
-import com.server.backend.upload.UploadService;
+import com.server.backend.upload.service.UploadService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

@@ -1,13 +1,24 @@
 <view class="page-shell">
   <view class="brand-bar">
-    <view class="brand-title">发布羽球内容</view>
+    <view class="brand-title">发布社区帖子</view>
   </view>
 
   <view class="form card">
+    <view class="topic-grid">
+      <button wx:for="{{topics}}" wx:key="id" class="topic {{form.topicId == item.id ? 'active' : ''}}" bindtap="selectTopic" data-id="{{item.id}}">
+        {{item.name}}
+      </button>
+    </view>
     <input class="field" value="{{form.title}}" placeholder="标题" bindinput="onField" data-key="title" />
-    <input class="field" value="{{form.coverUrl}}" placeholder="封面图片 URL" bindinput="onField" data-key="coverUrl" />
-    <textarea class="textarea" value="{{form.summary}}" placeholder="摘要" maxlength="120" bindinput="onField" data-key="summary"></textarea>
-    <textarea class="textarea content" value="{{form.content}}" placeholder="正文内容" bindinput="onField" data-key="content"></textarea>
+    <textarea class="textarea content" value="{{form.content}}" placeholder="写下赛事讨论、训练心得、器材交流或约战信息" maxlength="5000" bindinput="onField" data-key="content"></textarea>
+    <input class="field" value="{{imageInput}}" placeholder="配图 URL，可选" bindinput="onImageInput" />
+    <button class="secondary-btn" bindtap="addImage">添加配图</button>
+    <view wx:if="{{form.images.length}}" class="image-list">
+      <view wx:for="{{form.images}}" wx:key="*this" class="image-item">
+        <text>{{item}}</text>
+        <button bindtap="removeImage" data-index="{{index}}">移除</button>
+      </view>
+    </view>
     <button class="primary-btn" loading="{{submitting}}" bindtap="submit">提交发布</button>
   </view>
 

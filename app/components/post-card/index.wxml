@@ -1,0 +1,16 @@
+<view class="post-card" bindtap="onTap">
+  <view class="post-head">
+    <view class="topic">{{item.topicName || '球友社区'}}</view>
+    <view class="status">{{item.status === 'PUBLISHED' ? '已发布' : item.status || ''}}</view>
+  </view>
+  <view class="title">{{item.title}}</view>
+  <view class="content">{{item.content}}</view>
+  <view wx:if="{{item.images && item.images.length}}" class="image-row">
+    <image wx:for="{{item.images}}" wx:key="*this" wx:if="{{index < 3}}" class="thumb" src="{{item}}" mode="aspectFill"></image>
+  </view>
+  <view class="meta">
+    <text>{{item.nickname || '球友'}}</text>
+    <text>{{item.likeCount || 0}} 赞</text>
+    <text>{{item.commentCount || 0}} 评</text>
+  </view>
+</view>

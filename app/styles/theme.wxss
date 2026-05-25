@@ -1,6 +1,6 @@
 .page-shell {
   min-height: 100vh;
-  padding: 24rpx 24rpx 48rpx;
+  padding: 24rpx 24rpx 156rpx;
   background: #f4fee9;
 }
 

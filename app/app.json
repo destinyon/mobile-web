@@ -1,6 +1,8 @@
 {
   "pages": [
     "pages/home/index",
+    "pages/community/index",
+    "pages/post/detail/index",
     "pages/news/detail/index",
     "pages/news/list/index",
     "pages/news/editor/index",
@@ -18,14 +20,27 @@
     "backgroundTextStyle": "dark"
   },
   "tabBar": {
+    "custom": true,
     "color": "#5d6657",
-    "selectedColor": "#1478ff",
+    "selectedColor": "#172117",
     "backgroundColor": "#ffffff",
     "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/home/index",
-        "text": "主页"
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/news/list/index",
+        "text": "资讯"
+      },
+      {
+        "pagePath": "pages/news/editor/index",
+        "text": "发布"
+      },
+      {
+        "pagePath": "pages/community/index",
+        "text": "社区"
       },
       {
         "pagePath": "pages/mine/index/index",

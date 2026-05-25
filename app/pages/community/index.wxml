@@ -1,0 +1,31 @@
+<view class="page-shell community-shell">
+  <view class="brand-bar">
+    <view class="brand-title"><text class="brand-mark">聊</text>球友社区</view>
+    <button class="home-link" bindtap="goPublish">发帖</button>
+  </view>
+
+  <view class="search-entry">
+    <input class="search-input" value="{{keyword}}" placeholder="搜索话题、训练心得、约战" confirm-type="search" bindinput="onKeyword" bindconfirm="reload" />
+    <button class="search-btn" bindtap="reload">搜索</button>
+  </view>
+
+  <scroll-view class="topic-row" scroll-x enable-flex>
+    <button class="topic {{activeTopic === '' ? 'active' : ''}}" bindtap="selectTopic" data-id="">全部</button>
+    <button wx:for="{{topics}}" wx:key="id" class="topic {{activeTopic == item.id ? 'active' : ''}}" bindtap="selectTopic" data-id="{{item.id}}">
+      {{item.name}}
+    </button>
+  </scroll-view>
+
+  <view class="sort-row">
+    <button class="sort {{sort === 'latest' ? 'active' : ''}}" bindtap="selectSort" data-sort="latest">最新</button>
+    <button class="sort {{sort === 'hot' ? 'active' : ''}}" bindtap="selectSort" data-sort="hot">热门</button>
+  </view>
+
+  <view wx:if="{{loading && !items.length}}" class="state-box">正在加载社区帖子...</view>
+  <view wx:elif="{{error}}" class="state-box" bindtap="reload">{{error}}，点击重试</view>
+  <view wx:elif="{{!items.length}}" class="state-box">暂无帖子，点底部 + 发布第一条讨论</view>
+  <view wx:else class="post-list">
+    <post-card wx:for="{{items}}" wx:key="id" item="{{item}}"></post-card>
+  </view>
+  <view wx:if="{{items.length}}" class="load-more muted">{{hasMore ? '上拉加载更多' : '没有更多了'}}</view>
+</view>

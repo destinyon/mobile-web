@@ -6,6 +6,28 @@
   padding: 26rpx;
 }
 
+.topic-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.topic {
+  min-height: 56rpx;
+  padding: 0 24rpx;
+  border: 2rpx solid #172117;
+  border-radius: 999rpx;
+  background: #ffffff;
+  color: #172117;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.topic.active {
+  background: #172117;
+  color: #ffffff;
+}
+
 .field,
 .textarea {
   width: 100%;
@@ -24,4 +46,35 @@
 
 .content {
   min-height: 320rpx;
+}
+
+.image-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.image-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-height: 56rpx;
+  padding: 10rpx 12rpx;
+  border: 2rpx dashed #9baa93;
+  border-radius: 10rpx;
+  color: #65705f;
+  font-size: 22rpx;
+}
+
+.image-item text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.image-item button {
+  color: #172117;
+  font-size: 22rpx;
+  font-weight: 800;
 }

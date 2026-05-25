@@ -1,7 +1,7 @@
 <view class="page-shell home-shell">
   <view class="brand-bar">
     <view class="brand-title"><text class="brand-mark">羽</text>羽球在线</view>
-    <button class="publish-link" bindtap="goPublish">发布</button>
+    <button class="home-link" bindtap="goCommunity">社区热帖</button>
   </view>
 
   <view class="search-entry" bindtap="goSearch">
@@ -23,7 +23,7 @@
   </scroll-view>
 
   <view class="section-title">
-    <text>近期热点咨询：</text>
+    <text>近期热点资讯：</text>
     <text class="muted">{{total ? total + ' 条' : ''}}</text>
   </view>
 

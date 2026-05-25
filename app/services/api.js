@@ -48,8 +48,32 @@ function getPosts(params) {
   return request({ url: '/api/user/posts', data: params || {}, needAuth: true });
 }
 
-function createNews(data) {
-  return request({ url: '/api/news', method: 'POST', data, needAuth: true });
+function getTopics() {
+  return request({ url: '/api/topics' });
+}
+
+function getCommunityPosts(params) {
+  return request({ url: '/api/posts', data: params || {} });
+}
+
+function getPostDetail(id) {
+  return request({ url: `/api/posts/${id}` });
+}
+
+function createPost(data) {
+  return request({ url: '/api/posts', method: 'POST', data, needAuth: true });
+}
+
+function favoritePost(id) {
+  return request({ url: `/api/posts/${id}/favorite`, method: 'POST', needAuth: true });
+}
+
+function unfavoritePost(id) {
+  return request({ url: `/api/posts/${id}/favorite`, method: 'DELETE', needAuth: true });
+}
+
+function likePost(id) {
+  return request({ url: `/api/posts/${id}/like`, method: 'POST', needAuth: true });
 }
 
 function wxLogin(data) {
@@ -69,6 +93,12 @@ module.exports = {
   getFavorites,
   getComments,
   getPosts,
-  createNews,
+  getTopics,
+  getCommunityPosts,
+  getPostDetail,
+  createPost,
+  favoritePost,
+  unfavoritePost,
+  likePost,
   wxLogin
 };

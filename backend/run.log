@@ -9,20 +9,27 @@ Standard Commons Logging discovery in action with spring-jcl: please remove comm
 
  :: Spring Boot ::                (v3.3.5)
 
-2026-05-21T17:44:04.286+08:00  INFO 240776 --- [mobile-web-backend] [           main] com.server.backend.BackendApplication    : Starting BackendApplication using Java 17.0.16 with PID 240776 (D:\mobile-web\backend\target\classes started by why20 in D:\mobile-web\backend)
-2026-05-21T17:44:04.289+08:00  INFO 240776 --- [mobile-web-backend] [           main] com.server.backend.BackendApplication    : No active profile set, falling back to 1 default profile: "default"
-2026-05-21T17:44:05.171+08:00  INFO 240776 --- [mobile-web-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2026-05-21T17:44:05.185+08:00  INFO 240776 --- [mobile-web-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-05-21T17:44:05.185+08:00  INFO 240776 --- [mobile-web-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
-2026-05-21T17:44:05.241+08:00  INFO 240776 --- [mobile-web-backend] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-05-21T17:44:05.242+08:00  INFO 240776 --- [mobile-web-backend] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 911 ms
+2026-05-21T18:05:57.188+08:00  INFO 290680 --- [mobile-web-backend] [           main] com.server.backend.BackendApplication    : Starting BackendApplication using Java 17.0.16 with PID 290680 (D:\mobile-web\backend\target\classes started by why20 in D:\mobile-web\backend)
+2026-05-21T18:05:57.190+08:00  INFO 290680 --- [mobile-web-backend] [           main] com.server.backend.BackendApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-05-21T18:05:58.127+08:00  INFO 290680 --- [mobile-web-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-05-21T18:05:58.137+08:00  INFO 290680 --- [mobile-web-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-21T18:05:58.137+08:00  INFO 290680 --- [mobile-web-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-05-21T18:05:58.181+08:00  INFO 290680 --- [mobile-web-backend] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-05-21T18:05:58.182+08:00  INFO 290680 --- [mobile-web-backend] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 934 ms
 Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
-2026-05-21T17:44:05.265+08:00  INFO 240776 --- [mobile-web-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-05-21T17:44:09.518+08:00  INFO 240776 --- [mobile-web-backend] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn1: url=jdbc:h2:file:./data/mobile_web user=SA
-2026-05-21T17:44:09.519+08:00  INFO 240776 --- [mobile-web-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-05-21T17:44:09.527+08:00  INFO 240776 --- [mobile-web-backend] [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:file:./data/mobile_web'
-2026-05-21T17:44:10.053+08:00  INFO 240776 --- [mobile-web-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2026-05-21T17:44:10.060+08:00  INFO 240776 --- [mobile-web-backend] [           main] com.server.backend.BackendApplication    : Started BackendApplication in 6.105 seconds (process running for 6.374)
-2026-05-21T17:44:39.326+08:00  INFO 240776 --- [mobile-web-backend] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-05-21T17:44:39.326+08:00  INFO 240776 --- [mobile-web-backend] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-05-21T17:44:39.327+08:00  INFO 240776 --- [mobile-web-backend] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-05-21T18:05:58.204+08:00  INFO 290680 --- [mobile-web-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-21T18:06:02.441+08:00  INFO 290680 --- [mobile-web-backend] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn1: url=jdbc:h2:file:./data/mobile_web user=SA
+2026-05-21T18:06:02.443+08:00  INFO 290680 --- [mobile-web-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-21T18:06:02.449+08:00  INFO 290680 --- [mobile-web-backend] [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:file:./data/mobile_web'
+2026-05-21T18:06:02.899+08:00  INFO 290680 --- [mobile-web-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-05-21T18:06:02.905+08:00  INFO 290680 --- [mobile-web-backend] [           main] com.server.backend.BackendApplication    : Started BackendApplication in 6.129 seconds (process running for 6.491)
+2026-05-21T18:06:30.497+08:00  INFO 290680 --- [mobile-web-backend] [nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-21T18:06:30.497+08:00  INFO 290680 --- [mobile-web-backend] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-21T18:06:30.498+08:00  INFO 290680 --- [mobile-web-backend] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.3.5:run (default-cli) on project mobile-web-backend: Process terminated with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

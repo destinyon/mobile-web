@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "发布内容",
+  "navigationBarTitleText": "发布帖子",
   "usingComponents": {
     "auth-popup": "/components/auth-popup/index"
   }

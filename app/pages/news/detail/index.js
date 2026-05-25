@@ -13,6 +13,7 @@ Page({
     contentNodes: '',
     comments: [],
     commentContent: '',
+    replyTarget: {},
     loading: true,
     submitting: false,
     error: '',
@@ -72,6 +73,14 @@ Page({
     this.runProtected('comment');
   },
 
+  startReply(event) {
+    this.setData({ replyTarget: event.currentTarget.dataset.comment || {} });
+  },
+
+  cancelReply() {
+    this.setData({ replyTarget: {} });
+  },
+
   runProtected(action) {
     const taskMap = {
       like: () => api.likeNews(this.data.id),
@@ -83,14 +92,19 @@ Page({
       },
       comment: () => {
         this.setData({ submitting: true });
-        return api.createComment({ targetType: 'NEWS', targetId: this.data.id, content: this.data.commentContent.trim() });
+        return api.createComment({
+          targetType: 'NEWS',
+          targetId: this.data.id,
+          parentId: this.data.replyTarget.id || undefined,
+          content: this.data.commentContent.trim()
+        });
       }
     };
 
     taskMap[action]()
       .then(() => {
         wx.showToast({ title: '操作成功', icon: 'success' });
-        this.setData({ commentContent: '' });
+        this.setData({ commentContent: '', replyTarget: {} });
         this.loadDetail();
       })
       .catch((error) => {

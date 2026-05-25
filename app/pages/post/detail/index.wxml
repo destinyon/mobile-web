@@ -1,0 +1,57 @@
+<view class="page-shell detail-shell">
+  <view wx:if="{{loading}}" class="state-box">正在加载帖子...</view>
+  <view wx:elif="{{error}}" class="state-box" bindtap="loadDetail">{{error}}，点击重试</view>
+  <view wx:else>
+    <view class="brand-strip">
+      <text class="back" bindtap="goBack">‹</text>
+      <text class="brand-title-mini">帖子详情</text>
+    </view>
+
+    <view class="post card">
+      <view class="topic">{{detail.topicName || '球友社区'}}</view>
+      <view class="title">{{detail.title}}</view>
+      <view class="meta">
+        <text>{{detail.nickname || '球友'}}</text>
+        <text>{{detail.viewCount || 0}} 阅读</text>
+        <text>{{detail.commentCount || 0}} 评论</text>
+      </view>
+      <view class="content">{{detail.content}}</view>
+      <view wx:if="{{detail.images && detail.images.length}}" class="image-list">
+        <image wx:for="{{detail.images}}" wx:key="*this" class="post-image" src="{{item}}" mode="widthFix"></image>
+      </view>
+    </view>
+
+    <view class="actions">
+      <button class="action-btn" bindtap="onLike">赞 {{detail.likeCount || 0}}</button>
+      <button class="action-btn" bindtap="onFavorite">{{detail.favorited ? '已收藏' : '收藏'}}</button>
+    </view>
+
+    <view class="comment-box">
+      <view wx:if="{{replyTarget.id}}" class="reply-tip">
+        回复 {{replyTarget.nickname || '球友'}}
+        <button bindtap="cancelReply">取消</button>
+      </view>
+      <textarea class="comment-input" value="{{commentContent}}" placeholder="{{replyTarget.id ? '写下回复' : '写下你的看法'}}" maxlength="300" bindinput="onCommentInput"></textarea>
+      <button class="primary-btn" loading="{{submitting}}" bindtap="submitComment">{{replyTarget.id ? '发表回复' : '发表评论'}}</button>
+    </view>
+
+    <view class="section-title">评论区</view>
+    <view wx:if="{{comments.length}}" class="comments">
+      <view wx:for="{{comments}}" wx:key="id" class="comment-item">
+        <view class="comment-head">
+          <text>{{item.nickname || '球友'}}</text>
+          <button bindtap="startReply" data-comment="{{item}}">回复</button>
+        </view>
+        <view class="comment-content">{{item.content}}</view>
+        <view wx:if="{{item.replies && item.replies.length}}" class="reply-list">
+          <view wx:for="{{item.replies}}" wx:key="id" class="reply-item">
+            <text class="reply-name">{{item.nickname || '球友'}}：</text>{{item.content}}
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="state-box">暂无评论</view>
+  </view>
+
+  <auth-popup visible="{{showAuth}}" bind:cancel="hideAuth" bind:success="afterLogin"></auth-popup>
+</view>

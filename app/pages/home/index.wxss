@@ -1,4 +1,4 @@
-.publish-link {
+.home-link {
   min-width: 160rpx;
   min-height: 54rpx;
   border: 2rpx solid #172117;

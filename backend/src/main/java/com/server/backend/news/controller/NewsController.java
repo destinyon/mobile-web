@@ -2,6 +2,7 @@ package com.server.backend.news.controller;
 
 import com.server.backend.auth.service.AuthService;
 import com.server.backend.auth.dto.AuthUser;
+import com.server.backend.common.ActionState;
 import com.server.backend.common.ApiResponse;
 import com.server.backend.common.PageResult;
 import com.server.backend.news.dto.CreateNewsRequest;
@@ -52,20 +53,17 @@ public class NewsController {
     }
 
     @PostMapping("/{id}/favorite")
-    public ApiResponse<Void> favorite(@RequestHeader("Authorization") String authorization, @PathVariable long id) {
-        newsService.favorite(authService.requireUser(authorization), id);
-        return ApiResponse.ok(null);
+    public ApiResponse<ActionState> favorite(@RequestHeader("Authorization") String authorization, @PathVariable long id) {
+        return ApiResponse.ok(newsService.favorite(authService.requireUser(authorization), id));
     }
 
     @DeleteMapping("/{id}/favorite")
-    public ApiResponse<Void> unfavorite(@RequestHeader("Authorization") String authorization, @PathVariable long id) {
-        newsService.unfavorite(authService.requireUser(authorization), id);
-        return ApiResponse.ok(null);
+    public ApiResponse<ActionState> unfavorite(@RequestHeader("Authorization") String authorization, @PathVariable long id) {
+        return ApiResponse.ok(newsService.unfavorite(authService.requireUser(authorization), id));
     }
 
     @PostMapping("/{id}/like")
-    public ApiResponse<Void> like(@RequestHeader("Authorization") String authorization, @PathVariable long id) {
-        newsService.like(authService.requireUser(authorization), id);
-        return ApiResponse.ok(null);
+    public ApiResponse<ActionState> like(@RequestHeader("Authorization") String authorization, @PathVariable long id) {
+        return ApiResponse.ok(newsService.like(authService.requireUser(authorization), id));
     }
 }

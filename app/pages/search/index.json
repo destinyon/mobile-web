@@ -1,6 +1,6 @@
 {
   "navigationBarTitleText": "搜索",
   "usingComponents": {
-    "news-card": "/components/news-card/index"
+    "post-card": "/components/post-card/index"
   }
 }

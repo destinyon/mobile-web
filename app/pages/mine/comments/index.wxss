@@ -1,3 +1,30 @@
+.brand-strip {
+  display: flex;
+  align-items: center;
+  height: 64rpx;
+  margin-bottom: 16rpx;
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  color: #172117;
+  font-size: 40rpx;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.brand-title-mini {
+  flex: 1;
+  padding-right: 48rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
 .comment-list {
   display: flex;
   flex-direction: column;
@@ -5,17 +32,38 @@
 }
 
 .comment-card {
-  padding: 24rpx;
+  padding: 20rpx;
   border: 2rpx solid #172117;
-  border-radius: 16rpx;
+  border-radius: 8rpx;
   background: #ffffff;
   box-shadow: 6rpx 6rpx 0 rgba(23, 33, 23, 0.18);
+}
+
+.target-row {
+  display: flex;
+  gap: 14rpx;
+  align-items: center;
+}
+
+.target-cover {
+  flex: 0 0 118rpx;
+  width: 118rpx;
+  height: 86rpx;
+  border: 2rpx solid #172117;
+  border-radius: 6rpx;
+  background: #e7f6d8;
+}
+
+.target-main {
+  flex: 1;
+  min-width: 0;
 }
 
 .comment-title {
   color: #172117;
   font-size: 30rpx;
   font-weight: 800;
+  line-height: 1.35;
 }
 
 .comment-content {
@@ -23,4 +71,14 @@
   color: #3d493a;
   font-size: 27rpx;
   line-height: 1.6;
+}
+
+.parent-content {
+  margin-top: 16rpx;
+  padding: 12rpx;
+  border-radius: 8rpx;
+  background: #f4fee9;
+  color: #65705f;
+  font-size: 24rpx;
+  line-height: 1.5;
 }

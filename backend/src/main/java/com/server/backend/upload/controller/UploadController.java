@@ -25,4 +25,13 @@ public class UploadController {
         authService.requireUser(authorization);
         return ApiResponse.ok(uploadService.upload(file));
     }
+
+    @DeleteMapping
+    public ApiResponse<Void> delete(
+            @RequestHeader("Authorization") String authorization,
+            @RequestParam String objectKey) {
+        authService.requireUser(authorization);
+        uploadService.delete(objectKey);
+        return ApiResponse.ok(null);
+    }
 }

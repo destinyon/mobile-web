@@ -1,0 +1,25 @@
+<view class="page-shell">
+  <view class="brand-strip">
+    <view class="back" bindtap="goBack">‹</view>
+    <text class="brand-title-mini">浏览记录</text>
+  </view>
+  <view class="section-title">最近浏览</view>
+  <view wx:if="{{loading}}" class="state-box">正在加载...</view>
+  <view wx:elif="{{error}}" class="state-box" bindtap="load">{{error}}，点击重试</view>
+  <view wx:elif="{{!items.length}}" class="state-box">还没有浏览记录</view>
+  <view wx:else class="history-list">
+    <view wx:for="{{items}}" wx:key="id" class="history-card" bindtap="goTarget" data-item="{{item}}">
+      <image wx:if="{{item.coverUrl}}" class="history-cover" src="{{item.coverUrl}}" mode="aspectFill"></image>
+      <view wx:else class="history-cover cover-placeholder">羽</view>
+      <view class="history-main">
+        <view class="history-title">{{item.title || '内容已不可见'}}</view>
+        <view class="history-meta">
+          <text>{{item.targetType === 'POST' ? '帖子' : '新闻'}}</text>
+          <text>{{item.ownerName || '羽球在线'}}</text>
+        </view>
+        <view class="muted">{{item.viewedAt || ''}}</view>
+      </view>
+    </view>
+  </view>
+  <auth-popup visible="{{showAuth}}" bind:cancel="hideAuth" bind:success="afterLogin"></auth-popup>
+</view>

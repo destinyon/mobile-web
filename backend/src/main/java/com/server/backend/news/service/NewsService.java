@@ -2,12 +2,14 @@ package com.server.backend.news.service;
 
 import com.server.backend.auth.dto.AuthUser;
 import com.server.backend.comment.service.CommentService;
+import com.server.backend.common.ActionState;
 import com.server.backend.common.BusinessException;
 import com.server.backend.common.PageResult;
 import com.server.backend.common.Rows;
 import com.server.backend.news.dto.CreateNewsRequest;
 import com.server.backend.news.dto.NewsDetail;
 import com.server.backend.news.dto.NewsSummary;
+import com.server.backend.user.service.BrowseHistoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -23,10 +25,12 @@ import java.util.List;
 public class NewsService {
     private final JdbcTemplate jdbcTemplate;
     private final CommentService commentService;
+    private final BrowseHistoryService browseHistoryService;
 
-    public NewsService(JdbcTemplate jdbcTemplate, CommentService commentService) {
+    public NewsService(JdbcTemplate jdbcTemplate, CommentService commentService, BrowseHistoryService browseHistoryService) {
         this.jdbcTemplate = jdbcTemplate;
         this.commentService = commentService;
+        this.browseHistoryService = browseHistoryService;
     }
 
     public PageResult<NewsSummary> list(String keyword, Long categoryId, String sort, int page, int pageSize, long userId) {
@@ -65,15 +69,18 @@ public class NewsService {
         jdbcTemplate.update("UPDATE news SET view_count = view_count + 1 WHERE id = ? AND status = 'PUBLISHED'", id);
         List<NewsDetail> rows = jdbcTemplate.query("""
                 SELECT n.*, c.name AS category_name,
+                CASE WHEN l.id IS NULL THEN FALSE ELSE TRUE END AS liked,
                 CASE WHEN f.id IS NULL THEN FALSE ELSE TRUE END AS favorited
                 FROM news n
                 LEFT JOIN categories c ON c.id = n.category_id
+                LEFT JOIN likes l ON l.target_type = 'NEWS' AND l.target_id = n.id AND l.user_id = ?
                 LEFT JOIN favorites f ON f.target_type = 'NEWS' AND f.target_id = n.id AND f.user_id = ?
                 WHERE n.id = ? AND n.status = 'PUBLISHED'
-                """, Rows.newsDetail(), userId, id);
+                """, Rows.newsDetail(), userId, userId, id);
         if (rows.isEmpty()) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "资讯不存在或已下架");
         }
+        browseHistoryService.record(userId, "NEWS", id);
         NewsDetail detail = rows.get(0);
         detail.comments().addAll(commentService.listForTarget("NEWS", id));
         return detail;
@@ -101,22 +108,34 @@ public class NewsService {
         return detail(keyHolder.getKey().longValue(), user.id());
     }
 
-    public void favorite(AuthUser user, long newsId) {
+    public ActionState favorite(AuthUser user, long newsId) {
+        ensurePublished(newsId);
         jdbcTemplate.update("INSERT IGNORE INTO favorites(user_id, target_type, target_id) VALUES(?, 'NEWS', ?)",
                 user.id(), newsId);
         refreshFavoriteCount(newsId);
+        return actionState(user.id(), newsId);
     }
 
-    public void unfavorite(AuthUser user, long newsId) {
+    public ActionState unfavorite(AuthUser user, long newsId) {
         jdbcTemplate.update("DELETE FROM favorites WHERE user_id = ? AND target_type = 'NEWS' AND target_id = ?", user.id(), newsId);
         refreshFavoriteCount(newsId);
+        return actionState(user.id(), newsId);
     }
 
-    public void like(AuthUser user, long newsId) {
-        jdbcTemplate.update("INSERT IGNORE INTO likes(user_id, target_type, target_id) VALUES(?, 'NEWS', ?)",
-                user.id(), newsId);
+    public ActionState like(AuthUser user, long newsId) {
+        ensurePublished(newsId);
+        Integer exists = jdbcTemplate.queryForObject("""
+                SELECT COUNT(*) FROM likes WHERE user_id = ? AND target_type = 'NEWS' AND target_id = ?
+                """, Integer.class, user.id(), newsId);
+        if (exists != null && exists > 0) {
+            jdbcTemplate.update("DELETE FROM likes WHERE user_id = ? AND target_type = 'NEWS' AND target_id = ?", user.id(), newsId);
+        } else {
+            jdbcTemplate.update("INSERT INTO likes(user_id, target_type, target_id) VALUES(?, 'NEWS', ?)",
+                    user.id(), newsId);
+        }
         jdbcTemplate.update("UPDATE news SET like_count = (SELECT COUNT(*) FROM likes WHERE target_type = 'NEWS' AND target_id = ?) WHERE id = ?",
                 newsId, newsId);
+        return actionState(user.id(), newsId);
     }
 
     public List<NewsSummary> favorites(long userId) {
@@ -145,5 +164,31 @@ public class NewsService {
     private void refreshFavoriteCount(long newsId) {
         jdbcTemplate.update("UPDATE news SET favorite_count = (SELECT COUNT(*) FROM favorites WHERE target_type = 'NEWS' AND target_id = ?) WHERE id = ?",
                 newsId, newsId);
+    }
+
+    private void ensurePublished(long newsId) {
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM news WHERE id = ? AND status = 'PUBLISHED'", Integer.class, newsId);
+        if (count == null || count == 0) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "资讯不存在或已下架");
+        }
+    }
+
+    private ActionState actionState(long userId, long newsId) {
+        return jdbcTemplate.queryForObject("""
+                SELECT
+                CASE WHEN l.id IS NULL THEN FALSE ELSE TRUE END AS liked,
+                CASE WHEN f.id IS NULL THEN FALSE ELSE TRUE END AS favorited,
+                n.like_count,
+                n.favorite_count
+                FROM news n
+                LEFT JOIN likes l ON l.target_type = 'NEWS' AND l.target_id = n.id AND l.user_id = ?
+                LEFT JOIN favorites f ON f.target_type = 'NEWS' AND f.target_id = n.id AND f.user_id = ?
+                WHERE n.id = ?
+                """, (rs, rowNum) -> new ActionState(
+                rs.getBoolean("liked"),
+                rs.getBoolean("favorited"),
+                rs.getInt("like_count"),
+                rs.getInt("favorite_count")
+        ), userId, userId, newsId);
     }
 }

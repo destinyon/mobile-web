@@ -18,6 +18,15 @@ Page({
     this.load();
   },
 
+  goBack() {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.switchTab({ url: '/pages/mine/index/index' });
+    }
+  },
+
   load() {
     this.setData({ loading: true, error: '' });
     return api.getFavorites()

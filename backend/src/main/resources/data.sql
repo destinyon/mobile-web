@@ -8,17 +8,17 @@ play_years = VALUES(play_years), gender = VALUES(gender), role = VALUES(role), s
 
 INSERT INTO categories (id, name, sort_no, status)
 VALUES
-(1, '赛事资讯', 1, 'ACTIVE'),
-(2, '训练技巧', 2, 'ACTIVE'),
-(3, '球友社区', 3, 'ACTIVE')
+(1, '赛事讨论', 1, 'ACTIVE'),
+(2, '社区交流', 2, 'ACTIVE'),
+(3, '羽球装备', 3, 'ACTIVE')
 ON DUPLICATE KEY UPDATE name = VALUES(name), sort_no = VALUES(sort_no), status = VALUES(status);
 
 INSERT INTO topics (id, name, description, sort_no, status)
 VALUES
-(1, '赛事讨论', '聊比赛、赛程和选手表现', 1, 'ACTIVE'),
-(2, '训练心得', '分享步法、发力和双打配合', 2, 'ACTIVE'),
-(3, '器材交流', '球拍、球线、球鞋和穿搭建议', 3, 'ACTIVE'),
-(4, '球友约战', '同城约球、分级对抗和活动招募', 4, 'ACTIVE')
+(1, '赛事讨论', '围绕比赛、赛程和球员表现的投稿', 1, 'ACTIVE'),
+(2, '社区交流', '球友心得、训练记录和约球交流', 2, 'ACTIVE'),
+(3, '羽球装备', '球拍、球线、球鞋和穿搭建议', 3, 'ACTIVE'),
+(4, '旧话题', '旧链路停用', 99, 'OFFLINE')
 ON DUPLICATE KEY UPDATE name = VALUES(name), description = VALUES(description), sort_no = VALUES(sort_no), status = VALUES(status);
 
 INSERT INTO banners (id, title, image_url, link_type, link_target, sort_no, status)
@@ -29,12 +29,11 @@ ON DUPLICATE KEY UPDATE
 title = VALUES(title), image_url = VALUES(image_url), link_type = VALUES(link_type),
 link_target = VALUES(link_target), sort_no = VALUES(sort_no), status = VALUES(status);
 
-INSERT INTO posts (id, topic_id, user_id, title, content, images, like_count, favorite_count, comment_count, status)
+INSERT INTO posts (id, topic_id, user_id, title, cover_url, content, images, like_count, favorite_count, comment_count, status)
 VALUES
-(1, 2, 1, '反手高远球总是不到位，怎么练更有效？', '最近反手区被压得比较被动，想听听大家的训练方法。', '[]', 2, 0, 0, 'PUBLISHED'),
-(2, 4, 2, '周末奥体双打缺两位球友', '周六下午三点，水平中等偏上，欢迎一起打分级对抗。', '[]', 5, 1, 0, 'PUBLISHED')
+(1, 2, 1, '反手高远球总是不到位，怎么练更有效？', '', '最近反手区被压得比较被动，想听听大家的训练方法。', '', 2, 0, 0, 'PUBLISHED'),
+(2, 1, 2, '周末奥体双打缺两位球友', '', '周六下午三点，水平中等偏上，欢迎一起打分级对抗。', '', 5, 1, 0, 'PUBLISHED')
 ON DUPLICATE KEY UPDATE
-topic_id = VALUES(topic_id), user_id = VALUES(user_id), title = VALUES(title), content = VALUES(content),
+topic_id = VALUES(topic_id), user_id = VALUES(user_id), title = VALUES(title), cover_url = VALUES(cover_url), content = VALUES(content),
 images = VALUES(images), like_count = VALUES(like_count), favorite_count = VALUES(favorite_count),
 comment_count = VALUES(comment_count), status = VALUES(status);
-

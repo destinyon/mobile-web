@@ -1,14 +1,15 @@
 {
   "pages": [
     "pages/home/index",
-    "pages/community/index",
     "pages/post/detail/index",
     "pages/news/detail/index",
     "pages/news/list/index",
     "pages/news/editor/index",
     "pages/search/index",
     "pages/mine/index/index",
+    "pages/mine/profile/index",
     "pages/mine/favorites/index",
+    "pages/mine/history/index",
     "pages/mine/comments/index",
     "pages/mine/posts/index"
   ],
@@ -31,16 +32,8 @@
         "text": "首页"
       },
       {
-        "pagePath": "pages/news/list/index",
-        "text": "资讯"
-      },
-      {
         "pagePath": "pages/news/editor/index",
         "text": "发布"
-      },
-      {
-        "pagePath": "pages/community/index",
-        "text": "社区"
       },
       {
         "pagePath": "pages/mine/index/index",

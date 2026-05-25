@@ -3,20 +3,23 @@
   align-items: center;
   height: 64rpx;
   margin-bottom: 14rpx;
-  border: 2rpx solid #172117;
-  background: #fafff3;
 }
 
 .back {
-  width: 62rpx;
-  text-align: center;
-  font-size: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  color: #172117;
+  font-size: 40rpx;
+  font-weight: 900;
   line-height: 1;
 }
 
 .brand-title-mini {
   flex: 1;
-  padding-right: 62rpx;
+  padding-right: 48rpx;
   text-align: center;
   font-size: 28rpx;
   font-weight: 800;
@@ -63,31 +66,6 @@
   box-sizing: border-box;
 }
 
-.actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12rpx;
-  margin-top: 14rpx;
-}
-
-.action-btn {
-  min-height: 68rpx;
-  border: 2rpx solid #172117;
-  border-radius: 6rpx;
-  background: #ffffff;
-  color: #172117;
-  font-size: 28rpx;
-  font-weight: 800;
-}
-
-.comment-box {
-  margin-top: 16rpx;
-  padding: 16rpx;
-  border: 2rpx solid #172117;
-  border-radius: 6rpx;
-  background: #ffffff;
-}
-
 .comment-input {
   width: 100%;
   min-height: 150rpx;
@@ -97,37 +75,62 @@
   font-size: 28rpx;
 }
 
-.comment-box .primary-btn {
-  margin-top: 18rpx;
-}
-
 .comments {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 0;
+  margin-bottom: 118rpx;
+  border-top: 2rpx solid #d6dfcf;
 }
 
 .comment-item {
-  padding: 18rpx;
-  border: 2rpx solid #172117;
-  border-radius: 6rpx;
-  background: #ffffff;
+  padding: 14rpx 0;
+  border-bottom: 2rpx solid #d6dfcf;
 }
 
 .comment-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 14rpx;
   color: #172117;
   font-size: 26rpx;
   font-weight: 800;
 }
 
-.comment-head button,
-.reply-tip button {
+.comment-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 64rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border: 2rpx solid #172117;
+  border-radius: 50%;
+  background: #dff5c9;
+}
+
+.avatar-placeholder {
   color: #172117;
-  font-size: 24rpx;
-  font-weight: 800;
+  font-size: 26rpx;
+  font-weight: 900;
+}
+
+.comment-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reply-action,
+.reply-close {
+  color: #172117;
+  font-size: 28rpx;
+  font-weight: 900;
 }
 
 .comment-content {
@@ -135,6 +138,15 @@
   color: #3d493a;
   font-size: 27rpx;
   line-height: 1.6;
+}
+
+.reply-panel {
+  margin-top: 16rpx;
+  margin-bottom: 16rpx;
+  padding: 16rpx;
+  border: 2rpx solid #172117;
+  border-radius: 8rpx;
+  background: #fafff3;
 }
 
 .reply-tip {
@@ -150,7 +162,7 @@
   display: flex;
   flex-direction: column;
   gap: 8rpx;
-  margin-top: 12rpx;
+  margin: 12rpx 0 0 78rpx;
   padding: 12rpx;
   border-radius: 8rpx;
   background: #f4fee9;
@@ -165,4 +177,83 @@
 .reply-name {
   color: #172117;
   font-weight: 800;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 22rpx 0 8rpx;
+  color: #21638a;
+  font-size: 30rpx;
+  font-weight: 900;
+}
+
+.comment-tools {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  color: #3d493a;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.empty-comments {
+  margin-bottom: 118rpx;
+  padding: 40rpx 0;
+  color: #65705f;
+  font-size: 25rpx;
+  text-align: center;
+}
+
+.comment-toolbar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 12rpx 14rpx calc(12rpx + env(safe-area-inset-bottom));
+  border-top: 2rpx solid #d6dfcf;
+  background: #ffffff;
+}
+
+.toolbar-comment,
+.toolbar-send,
+.toolbar-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 48rpx;
+  width: 48rpx;
+  height: 48rpx;
+  color: #172117;
+  font-size: 32rpx;
+  font-weight: 900;
+}
+
+.toolbar-input {
+  flex: 1;
+  min-width: 0;
+  height: 58rpx;
+  padding: 0 18rpx;
+  border: 2rpx solid #d6dfcf;
+  border-radius: 6rpx;
+  background: #fafff3;
+  color: #172117;
+  font-size: 25rpx;
+}
+
+.toolbar-send {
+  color: #2b7f56;
+}
+
+.like-action.active {
+  color: #e0563f;
+}
+
+.favorite-action.active {
+  color: #2b7f56;
 }

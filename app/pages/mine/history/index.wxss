@@ -1,0 +1,84 @@
+.brand-strip {
+  display: flex;
+  align-items: center;
+  height: 64rpx;
+  margin-bottom: 16rpx;
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  color: #172117;
+  font-size: 40rpx;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.brand-title-mini {
+  flex: 1;
+  padding-right: 48rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.history-card {
+  display: flex;
+  gap: 16rpx;
+  padding: 16rpx;
+  border: 2rpx solid #172117;
+  border-radius: 8rpx;
+  background: #ffffff;
+  box-shadow: 6rpx 6rpx 0 rgba(23, 33, 23, 0.16);
+}
+
+.history-cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 150rpx;
+  width: 150rpx;
+  height: 110rpx;
+  border: 2rpx solid #172117;
+  border-radius: 6rpx;
+  background: #e7f6d8;
+  color: #172117;
+  font-size: 42rpx;
+  font-weight: 900;
+}
+
+.history-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.history-title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #172117;
+  font-size: 29rpx;
+  font-weight: 900;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.history-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx 18rpx;
+  margin: 8rpx 0;
+  color: #2b7f56;
+  font-size: 23rpx;
+  font-weight: 800;
+}

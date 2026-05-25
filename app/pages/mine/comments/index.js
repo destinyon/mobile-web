@@ -18,6 +18,15 @@ Page({
     this.load();
   },
 
+  goBack() {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.switchTab({ url: '/pages/mine/index/index' });
+    }
+  },
+
   load() {
     this.setData({ loading: true, error: '' });
     return api.getComments()
@@ -32,9 +41,11 @@ Page({
       .finally(() => this.setData({ loading: false }));
   },
 
-  goNews(event) {
-    const id = event.currentTarget.dataset.id;
-    if (id) wx.navigateTo({ url: `/pages/news/detail/index?id=${id}` });
+  goTarget(event) {
+    const item = event.currentTarget.dataset.item;
+    if (!item || !item.targetId) return;
+    const path = item.targetType === 'POST' ? '/pages/post/detail/index' : '/pages/news/detail/index';
+    wx.navigateTo({ url: `${path}?id=${item.targetId}` });
   },
 
   hideAuth() {

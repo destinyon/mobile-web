@@ -39,6 +39,11 @@ class UserFlowIntegrationTest {
         jdbcTemplate.update("DELETE FROM comments WHERE target_type = 'NEWS'");
         jdbcTemplate.update("DELETE FROM favorites WHERE target_type = 'NEWS'");
         jdbcTemplate.update("DELETE FROM likes WHERE target_type = 'NEWS'");
+        jdbcTemplate.update("DELETE FROM comments WHERE target_type = 'POST'");
+        jdbcTemplate.update("DELETE FROM favorites WHERE target_type = 'POST'");
+        jdbcTemplate.update("DELETE FROM likes WHERE target_type = 'POST'");
+        jdbcTemplate.update("DELETE FROM browse_history");
+        jdbcTemplate.update("DELETE FROM posts");
         jdbcTemplate.update("DELETE FROM news");
         jdbcTemplate.update("""
                 INSERT INTO news(id, category_id, user_id, title, cover_url, summary, author, content, source, source_id, source_url, status)
@@ -72,11 +77,66 @@ class UserFlowIntegrationTest {
         mockMvc.perform(get("/api/user/comments").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data", hasSize(greaterThan(0))))
-                .andExpect(jsonPath("$.data[0].content").isNotEmpty());
+                .andExpect(jsonPath("$.data[0].content").isNotEmpty())
+                .andExpect(jsonPath("$.data[0].targetTitle").value("测试羽毛球报名新闻"))
+                .andExpect(jsonPath("$.data[0].targetType").value("NEWS"));
 
         mockMvc.perform(delete("/api/news/3/favorite").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
+    }
+
+    @Test
+    void tracksHistoryAndReturnsLikedStateOnDetail() throws Exception {
+        String token = "Bearer " + authService.issueToken(1L, "USER");
+
+        mockMvc.perform(post("/api/news/3/like").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.liked").value(true));
+
+        mockMvc.perform(get("/api/news/3").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.liked").value(true));
+
+        mockMvc.perform(get("/api/news/3").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.liked").value(true));
+
+        mockMvc.perform(get("/api/user/history").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data", hasSize(1)))
+                .andExpect(jsonPath("$.data[0].targetType").value("NEWS"))
+                .andExpect(jsonPath("$.data[0].targetId").value(3))
+                .andExpect(jsonPath("$.data[0].title").value("测试羽毛球报名新闻"));
+
+        Integer count = jdbcTemplate.queryForObject("""
+                SELECT COUNT(*) FROM browse_history
+                WHERE user_id = 1 AND target_type = 'NEWS' AND target_id = 3
+                """, Integer.class);
+        org.assertj.core.api.Assertions.assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    void recordsPostBrowseHistoryForMineHistory() throws Exception {
+        String token = "Bearer " + authService.issueToken(1L, "USER");
+        jdbcTemplate.update("""
+                INSERT INTO posts(id, topic_id, user_id, title, cover_url, content, images, status)
+                VALUES(4, 2, 1, '浏览记录里的帖子', 'https://example.test/post-cover.jpg', '帖子正文', '', 'PUBLISHED')
+                """);
+
+        mockMvc.perform(get("/api/posts/4").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.title").value("浏览记录里的帖子"));
+
+        mockMvc.perform(get("/api/user/history").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data", hasSize(1)))
+                .andExpect(jsonPath("$.data[0].targetType").value("POST"))
+                .andExpect(jsonPath("$.data[0].targetId").value(4))
+                .andExpect(jsonPath("$.data[0].title").value("浏览记录里的帖子"));
     }
 
     @Test
@@ -93,6 +153,7 @@ class UserFlowIntegrationTest {
                 {
                   "topicId": 1,
                   "title": "周末双打怎么轮转更顺畅？",
+                  "coverUrl": "https://example.test/post-cover.jpg",
                   "content": "最近固定搭档打双打，想听听大家对前后场轮转的建议。",
                   "images": ["https://example.test/post.jpg"]
                 }
@@ -119,7 +180,20 @@ class UserFlowIntegrationTest {
 
         mockMvc.perform(post("/api/posts/" + postId + "/like").header("Authorization", token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true));
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.liked").value(true))
+                .andExpect(jsonPath("$.data.likeCount").value(1));
+
+        mockMvc.perform(post("/api/posts/" + postId + "/like").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.liked").value(false))
+                .andExpect(jsonPath("$.data.likeCount").value(0));
+
+        mockMvc.perform(post("/api/posts/" + postId + "/like").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.liked").value(true))
+                .andExpect(jsonPath("$.data.likeCount").value(1));
 
         mockMvc.perform(post("/api/posts/" + postId + "/favorite").header("Authorization", token))
                 .andExpect(status().isOk())
@@ -160,5 +234,77 @@ class UserFlowIntegrationTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data", hasSize(greaterThan(0))))
                 .andExpect(jsonPath("$.data[0].title").isNotEmpty());
+    }
+
+    @Test
+    void supportsSingleDraftAndAuthorEditFlow() throws Exception {
+        String token = "Bearer " + authService.issueToken(1L, "USER");
+
+        mockMvc.perform(put("/api/posts/draft")
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "topicId": 2,
+                                  "title": "草稿标题",
+                                  "coverUrl": "https://example.test/draft-cover.jpg",
+                                  "content": "第一版草稿内容",
+                                  "images": ["https://example.test/a.jpg"]
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.status").value("DRAFT"))
+                .andExpect(jsonPath("$.data.coverUrl").value("https://example.test/draft-cover.jpg"));
+
+        mockMvc.perform(put("/api/posts/draft")
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "topicId": 3,
+                                  "title": "草稿标题二",
+                                  "coverUrl": "https://example.test/draft-cover-2.jpg",
+                                  "content": "第二版草稿内容",
+                                  "images": []
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.status").value("DRAFT"))
+                .andExpect(jsonPath("$.data.title").value("草稿标题二"));
+
+        mockMvc.perform(get("/api/posts/draft").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.title").value("草稿标题二"));
+
+        JsonNode published = objectMapper.readTree(mockMvc.perform(post("/api/posts/draft/publish")
+                        .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.status").value("PUBLISHED"))
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray());
+        long postId = published.path("data").path("id").asLong();
+
+        mockMvc.perform(put("/api/posts/" + postId)
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "topicId": 1,
+                                  "title": "更新后的帖子",
+                                  "coverUrl": "https://example.test/updated-cover.jpg",
+                                  "content": "更新后的正文",
+                                  "images": ["https://example.test/b.jpg"]
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.title").value("更新后的帖子"))
+                .andExpect(jsonPath("$.data.coverUrl").value("https://example.test/updated-cover.jpg"));
+
+        mockMvc.perform(get("/api/user/posts").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].status").value("PUBLISHED"))
+                .andExpect(jsonPath("$.data[0].title").value("更新后的帖子"));
     }
 }

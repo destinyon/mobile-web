@@ -3,7 +3,7 @@
   <view wx:elif="{{error}}" class="state-box" bindtap="loadDetail">{{error}}，点击重试</view>
   <view wx:else>
     <view class="brand-strip">
-      <text class="back" bindtap="goBack">‹</text>
+      <view class="back" bindtap="goBack">‹</view>
       <text class="brand-title-mini">文章详情</text>
     </view>
 
@@ -12,33 +12,40 @@
       <view class="meta">
         <text>{{detail.categoryName || detail.category || '羽球资讯'}}</text>
         <text>{{detail.author || '羽球在线'}}</text>
-        <text>{{detail.viewCount || 0}} 阅读</text>
+        <text>◉ {{detail.viewCount || 0}}</text>
+        <text>赞 {{detail.likeCount || detail.likes || 0}}</text>
       </view>
       <rich-text class="content" nodes="{{contentNodes}}"></rich-text>
     </view>
 
-    <view class="actions">
-      <button class="action-btn" bindtap="onLike">赞 {{detail.likeCount || detail.likes || 0}}</button>
-      <button class="action-btn" bindtap="onFavorite">{{detail.favorited || detail.favorite ? '已收藏' : '收藏'}}</button>
-    </view>
-
-    <view class="comment-box">
-      <view wx:if="{{replyTarget.id}}" class="reply-tip">
-        回复 {{replyTarget.nickname || '球友'}}
-        <button bindtap="cancelReply">取消</button>
+    <view wx:if="{{replyTarget.id}}" class="reply-panel">
+      <view class="reply-tip">
+        <text>回复 {{replyTarget.nickname || '球友'}}</text>
+        <view class="reply-close" bindtap="cancelReply">×</view>
       </view>
-      <textarea class="comment-input" value="{{commentContent}}" placeholder="{{replyTarget.id ? '写下回复' : '写下你的看法'}}" maxlength="300" bindinput="onCommentInput"></textarea>
-      <button class="primary-btn" loading="{{submitting}}" bindtap="submitComment">{{replyTarget.id ? '发表回复' : '发表评论'}}</button>
+      <textarea class="comment-input" value="{{replyContent}}" placeholder="写下回复" maxlength="300" bindinput="onReplyInput"></textarea>
+      <button class="primary-btn" loading="{{submitting}}" bindtap="submitReply">发表回复</button>
     </view>
 
-    <view class="section-title">评论区</view>
+    <view class="comment-header">
+      <text>评论区：</text>
+      <view class="comment-tools">
+        <text class="comment-count">▣ {{detail.commentCount || comments.length || 0}}</text>
+      </view>
+    </view>
     <view wx:if="{{comments.length}}" class="comments">
       <view wx:for="{{comments}}" wx:key="id" class="comment-item">
         <view class="comment-head">
-          <text>{{item.nickname || item.userName || '球友'}}</text>
-          <button bindtap="startReply" data-comment="{{item}}">回复</button>
+          <image wx:if="{{item.avatarUrl}}" class="comment-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+          <view wx:else class="comment-avatar avatar-placeholder">羽</view>
+          <view class="comment-main">
+            <view class="comment-name-row">
+              <text>{{item.nickname || item.userName || '球友'}}</text>
+              <view class="reply-action" bindtap="startReply" data-comment="{{item}}">↩</view>
+            </view>
+            <view class="comment-content">{{item.content}}</view>
+          </view>
         </view>
-        <view class="comment-content">{{item.content}}</view>
         <view wx:if="{{item.replies && item.replies.length}}" class="reply-list">
           <view wx:for="{{item.replies}}" wx:key="id" class="reply-item">
             <text class="reply-name">{{item.nickname || '球友'}}：</text>{{item.content}}
@@ -46,7 +53,15 @@
         </view>
       </view>
     </view>
-    <view wx:else class="state-box">暂无评论</view>
+    <view wx:else class="empty-comments">暂无评论</view>
+  </view>
+
+  <view wx:if="{{!loading && !error}}" class="comment-toolbar">
+    <view class="toolbar-comment">▣</view>
+    <input class="toolbar-input" value="{{commentContent}}" placeholder="不要忘记友善评论哦！" confirm-type="send" bindinput="onCommentInput" bindconfirm="submitComment" />
+    <view class="toolbar-send" bindtap="submitComment">↗</view>
+    <view class="toolbar-action like-action {{detail.liked ? 'active' : ''}}" bindtap="onLike">👍</view>
+    <view class="toolbar-action favorite-action {{detail.favorited || detail.favorite ? 'active' : ''}}" bindtap="onFavorite">☆</view>
   </view>
 
   <auth-popup visible="{{showAuth}}" bind:cancel="hideAuth" bind:success="afterLogin"></auth-popup>

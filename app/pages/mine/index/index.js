@@ -11,7 +11,7 @@ Page({
 
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 4 });
+      this.getTabBar().setData({ selected: 2 });
     }
     if (wx.getStorageSync('token')) {
       this.loadProfile();
@@ -30,7 +30,7 @@ Page({
 
   ensureLogin() {
     if (wx.getStorageSync('token')) {
-      this.loadProfile();
+      wx.navigateTo({ url: '/pages/mine/profile/index' });
       return;
     }
     this.setData({ showAuth: true });

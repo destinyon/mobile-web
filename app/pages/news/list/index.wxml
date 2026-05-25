@@ -1,4 +1,8 @@
 <view class="page-shell">
+  <view class="brand-strip">
+    <view class="back" bindtap="goBack">‹</view>
+    <text class="brand-title-mini">{{title}}</text>
+  </view>
   <view class="section-title">
     <text>{{title}}</text>
     <text class="muted">{{total ? total + ' 条' : ''}}</text>

@@ -1,47 +1,107 @@
 .brand-strip {
   display: flex;
   align-items: center;
-  justify-content: center;
   height: 64rpx;
   margin-bottom: 16rpx;
-  border: 2rpx solid #172117;
-  background: #fafff3;
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  color: #172117;
+  font-size: 40rpx;
+  font-weight: 900;
+  line-height: 1;
 }
 
 .brand-title-mini {
+  flex: 1;
+  padding-right: 48rpx;
+  text-align: center;
   font-size: 28rpx;
   font-weight: 800;
 }
 
+.search-card {
+  padding: 18rpx;
+  border: 2rpx solid #172117;
+  border-radius: 8rpx;
+  background: #ffffff;
+  box-shadow: 6rpx 6rpx 0 rgba(23, 33, 23, 0.16);
+}
+
 .search-bar {
   display: flex;
+  align-items: center;
   gap: 12rpx;
-  margin-bottom: 20rpx;
+}
+
+.search-icon {
+  color: #172117;
+  font-size: 34rpx;
+  line-height: 1;
 }
 
 .search-input {
   flex: 1;
   min-height: 72rpx;
-  padding: 0 24rpx;
-  border: 2rpx solid #172117;
-  border-radius: 6rpx;
-  background: #ffffff;
+  padding: 0 18rpx;
+  border: 2rpx solid #d6dfcf;
+  border-radius: 8rpx;
+  background: #fafff3;
   font-size: 28rpx;
 }
 
 .search-btn {
-  width: 126rpx;
+  width: 116rpx;
   min-height: 72rpx;
   border: 2rpx solid #172117;
-  border-radius: 6rpx;
+  border-radius: 8rpx;
   background: #baf279;
   color: #172117;
-  font-size: 28rpx;
+  font-size: 27rpx;
   font-weight: 800;
 }
 
-.news-list {
+.topic-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6rpx;
+  width: 100%;
+  margin-top: 16rpx;
+}
+
+.topic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 46rpx;
+  padding: 0 2rpx;
+  border: 2rpx solid #172117;
+  border-radius: 6rpx;
+  background: #ffffff;
+  color: #172117;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-size: 18rpx;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.topic.active {
+  background: #172117;
+  color: #ffffff;
+}
+
+.post-list {
   display: flex;
   flex-direction: column;
-  gap: 14rpx;
+  gap: 18rpx;
+  margin-top: 22rpx;
 }

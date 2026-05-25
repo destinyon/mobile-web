@@ -26,6 +26,15 @@ Page({
     this.reload();
   },
 
+  goBack() {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.switchTab({ url: '/pages/home/index' });
+    }
+  },
+
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 1 });

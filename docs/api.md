@@ -8,93 +8,89 @@
 
 失败响应仍使用同一结构，`success=false`，`msg` 为可展示错误信息。
 
-## 小程序接口
-
-### 首页
+## 首页
 
 - `GET /api/banners`
-- `GET /api/categories`
+  - 返回最新已发布新闻的前 5 个封面轮播。
+  - `linkType=NEWS`，`linkTarget` 为新闻 ID。
+- `GET /api/topics`
+  - 返回投稿分类：赛事讨论、社区交流、羽球装备。
 
-### 资讯
+## 资讯
 
 - `GET /api/news?keyword=&categoryId=&sort=latest|hot&page=1&pageSize=10`
 - `GET /api/news/{id}`
-- `POST /api/news`
 - `POST /api/news/{id}/favorite`
 - `DELETE /api/news/{id}/favorite`
 - `POST /api/news/{id}/like`
 
-### 评论
-
-- `POST /api/comments`
-
-请求体：
+点赞接口会切换当前用户点赞状态，并返回：
 
 ```json
-{ "targetType": "NEWS", "targetId": 1, "content": "评论内容" }
+{ "liked": true, "favorited": false, "likeCount": 1, "favoriteCount": 0 }
 ```
 
-回复评论时传 `parentId`。`targetType` 支持 `NEWS` 与 `POST`。
-
-```json
-{ "targetType": "POST", "targetId": 1, "parentId": 10, "content": "回复内容" }
-```
-
-### 社区
+## 玩家投稿
 
 - `GET /api/topics`
 - `GET /api/posts?topicId=&keyword=&sort=latest|hot&page=1&pageSize=10`
 - `GET /api/posts/{id}`
 - `POST /api/posts`
+- `PUT /api/posts/{id}`
+- `GET /api/posts/draft`
+- `PUT /api/posts/draft`
+- `POST /api/posts/draft/publish`
 - `POST /api/posts/{id}/favorite`
 - `DELETE /api/posts/{id}/favorite`
 - `POST /api/posts/{id}/like`
 
-`POST /api/posts` 需要登录，请求体：
+`POST /api/posts` 和 `PUT /api/posts/{id}` 需要登录，请求体：
 
 ```json
 {
-  "topicId": 2,
+  "topicId": 1,
   "title": "双打接发站位怎么选？",
+  "coverUrl": "https://example.com/cover.jpg",
   "content": "帖子正文",
   "images": ["https://example.com/post.jpg"]
 }
 ```
 
-帖子状态包含 `PENDING`、`PUBLISHED`、`REJECTED`、`OFFLINE`。当前小程序发帖为课程演示闭环直接发布为 `PUBLISHED`。
+`PUT /api/posts/draft` 会为当前用户保存唯一草稿；再次保存会覆盖同一草稿。发布草稿后状态变为 `PUBLISHED`。
 
-### 用户中心
+## 评论
+
+- `POST /api/comments`
+
+```json
+{ "targetType": "POST", "targetId": 1, "parentId": 10, "content": "回复内容" }
+```
+
+`targetType` 支持 `NEWS` 和 `POST`。回复时 `parentId` 必须属于同一个目标对象。
+
+## 用户中心
 
 - `GET /api/user/profile`
 - `PUT /api/user/profile`
 - `GET /api/user/favorites`
+- `GET /api/user/history`
 - `GET /api/user/comments`
 - `GET /api/user/posts`
 
-### 登录与上传
+`GET /api/user/comments` 返回评论本身以及目标对象摘要，前端可按 `targetType` 跳转新闻或帖子详情。
+
+`GET /api/user/history` 返回当前用户最近浏览的新闻和帖子，按 `viewedAt` 倒序排列；重复浏览同一目标只更新浏览时间，不重复新增记录。
+
+## 登录与上传
 
 - `POST /api/auth/wx-login`
 - `POST /api/upload`
+- `DELETE /api/upload?objectKey=uploads/example.jpg`
 
-`/api/auth/wx-login` 请求体：
-
-```json
-{ "code": "wx.login 返回的 code", "nickname": "可选昵称", "avatarUrl": "可选头像" }
-```
-
-微信错误码或网络异常不会返回裸 500，会转换为业务错误响应。
-
-## 后台接口
-
-- `GET /api/admin/news`
-- `PUT /api/admin/news/{id}/status?status=PUBLISHED|DRAFT|OFFLINE`
-- `POST /api/admin/news/sync`
-
-`POST /api/admin/news/sync` 会抓取网易体育羽毛球滚动新闻 `https://sports.163.com/special/00051L24/ymq09.html` 前 10 页，读取详情页正文后增量写入 `news` 表。已存在的网易新闻不会重复同步，发布时间不晚于库内最新网易新闻 `created_at` 的数据会跳过；新入库新闻使用原文发布时间写入 `created_at` 和 `updated_at`。同步不会清空新闻、评论、点赞或收藏数据；正文入库前会清洗为安全 HTML，保留正文图片和图注，封面图不重复写入正文开头，标题按原文完整保存。后端启动时会自动同步一次，随后默认每 5 分钟同步一次。
+上传和删除均需要登录。删除只接受 OSS object key，不接受完整 URL。
 
 ## 权限
 
-- 资讯列表、详情、首页内容公开可读。
-- 社区话题、帖子列表和帖子详情公开可读。
-- 收藏、点赞、评论、回复、发帖、资料查看与修改需要登录。
+- 首页、资讯列表/详情、投稿列表/详情公开可读。
+- 收藏、点赞、评论、回复、发布、草稿、编辑、资料查看与修改需要登录。
 - 后台接口需要 `ADMIN` 角色。

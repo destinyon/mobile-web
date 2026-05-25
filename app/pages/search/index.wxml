@@ -1,18 +1,27 @@
-<view class="page-shell">
+<view class="page-shell search-shell">
   <view class="brand-strip">
-    <text class="brand-title-mini">搜索资讯</text>
+    <view class="back" bindtap="goBack">‹</view>
+    <text class="brand-title-mini">搜索内容</text>
   </view>
-  <view class="search-bar">
-    <input class="search-input" value="{{keyword}}" placeholder="输入关键词" confirm-type="search" bindinput="onInput" bindconfirm="onSearch" />
-    <button class="search-btn" bindtap="onSearch">搜索</button>
+  <view class="search-card">
+    <view class="search-bar">
+      <text class="search-icon">⌕</text>
+      <input class="search-input" value="{{keyword}}" placeholder="搜索新闻和投稿" confirm-type="search" bindinput="onInput" bindconfirm="onSearch" />
+      <button class="search-btn" bindtap="onSearch">搜索</button>
+    </view>
+    <view class="topic-row">
+      <view wx:for="{{filters}}" wx:key="type" class="topic {{activeFilter === item.type ? 'active' : ''}}" bindtap="selectFilter" data-type="{{item.type}}">
+        {{item.label}}
+      </view>
+    </view>
   </view>
 
   <view wx:if="{{loading}}" class="state-box">正在搜索...</view>
   <view wx:elif="{{error}}" class="state-box" bindtap="onSearch">{{error}}，点击重试</view>
-  <view wx:elif="{{searched && !newsList.length}}" class="state-box">没有找到相关新闻</view>
-  <view wx:elif="{{!searched}}" class="state-box">搜索羽球新闻、赛事和训练内容</view>
+  <view wx:elif="{{searched && !items.length}}" class="state-box">没有找到相关内容</view>
+  <view wx:elif="{{!searched}}" class="state-box">选择类别或输入关键词开始搜索</view>
 
-  <view wx:else class="news-list">
-    <news-card wx:for="{{newsList}}" wx:key="id" item="{{item}}"></news-card>
+  <view wx:else class="post-list">
+    <post-card wx:for="{{items}}" wx:key="feedKey" item="{{item}}"></post-card>
   </view>
 </view>

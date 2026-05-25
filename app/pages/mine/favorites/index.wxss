@@ -1,3 +1,30 @@
+.brand-strip {
+  display: flex;
+  align-items: center;
+  height: 64rpx;
+  margin-bottom: 16rpx;
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  color: #172117;
+  font-size: 40rpx;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.brand-title-mini {
+  flex: 1;
+  padding-right: 48rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
 .news-list {
   display: flex;
   flex-direction: column;

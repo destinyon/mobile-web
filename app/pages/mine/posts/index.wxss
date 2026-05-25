@@ -1,5 +1,61 @@
+.brand-strip {
+  display: flex;
+  align-items: center;
+  height: 64rpx;
+  margin-bottom: 16rpx;
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  color: #172117;
+  font-size: 40rpx;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.brand-title-mini {
+  flex: 1;
+  padding-right: 48rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
 .post-list {
   display: flex;
   flex-direction: column;
   gap: 22rpx;
+}
+
+.draft-card {
+  margin-bottom: 24rpx;
+  padding: 22rpx;
+  border: 2rpx solid #172117;
+  border-radius: 8rpx;
+  background: #fafff3;
+  box-shadow: 6rpx 6rpx 0 rgba(23, 33, 23, 0.16);
+}
+
+.draft-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42rpx;
+  padding: 0 16rpx;
+  border: 2rpx solid #172117;
+  border-radius: 8rpx;
+  background: #baf279;
+  color: #172117;
+  font-size: 22rpx;
+  font-weight: 900;
+}
+
+.draft-title {
+  margin: 14rpx 0 8rpx;
+  color: #172117;
+  font-size: 31rpx;
+  font-weight: 900;
 }

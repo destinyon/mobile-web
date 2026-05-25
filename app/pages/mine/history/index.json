@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "auth-popup": "/components/auth-popup/index"
+  }
+}

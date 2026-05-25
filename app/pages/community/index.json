@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "球友社区",
-  "enablePullDownRefresh": true,
-  "usingComponents": {
-    "post-card": "/components/post-card/index"
-  }
-}

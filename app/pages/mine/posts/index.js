@@ -9,6 +9,7 @@ function itemsOf(data) {
 Page({
   data: {
     items: [],
+    draft: null,
     loading: true,
     error: '',
     showAuth: false
@@ -18,10 +19,25 @@ Page({
     this.load();
   },
 
+  goBack() {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.switchTab({ url: '/pages/mine/index/index' });
+    }
+  },
+
   load() {
     this.setData({ loading: true, error: '' });
     return api.getPosts()
-      .then((data) => this.setData({ items: itemsOf(data) }))
+      .then((data) => {
+        const all = itemsOf(data);
+        this.setData({
+          draft: all.find((item) => item.status === 'DRAFT') || null,
+          items: all.filter((item) => item.status !== 'DRAFT')
+        });
+      })
       .catch((error) => {
         if (isAuthError(error)) {
           this.setData({ showAuth: true });
@@ -32,8 +48,8 @@ Page({
       .finally(() => this.setData({ loading: false }));
   },
 
-  goPublish() {
-    wx.navigateTo({ url: '/pages/news/editor/index' });
+  goDraft() {
+    wx.switchTab({ url: '/pages/news/editor/index' });
   },
 
   hideAuth() {

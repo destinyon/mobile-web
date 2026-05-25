@@ -20,6 +20,7 @@ public record NewsDetail(
         int likeCount,
         int favoriteCount,
         int commentCount,
+        boolean liked,
         boolean favorited,
         LocalDateTime updatedAt,
         List<CommentNode> comments

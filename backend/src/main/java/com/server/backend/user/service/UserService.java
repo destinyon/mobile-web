@@ -1,11 +1,12 @@
 package com.server.backend.user.service;
 
-import com.server.backend.comment.dto.CommentNode;
+import com.server.backend.comment.dto.UserCommentItem;
 import com.server.backend.comment.service.CommentService;
 import com.server.backend.news.service.NewsService;
 import com.server.backend.news.dto.NewsSummary;
 import com.server.backend.post.dto.PostSummary;
 import com.server.backend.post.service.PostService;
+import com.server.backend.user.dto.BrowseHistoryItem;
 import com.server.backend.user.dto.UpdateProfileRequest;
 import com.server.backend.user.dto.UserProfile;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,12 +20,19 @@ public class UserService {
     private final NewsService newsService;
     private final CommentService commentService;
     private final PostService postService;
+    private final BrowseHistoryService browseHistoryService;
 
-    public UserService(JdbcTemplate jdbcTemplate, NewsService newsService, CommentService commentService, PostService postService) {
+    public UserService(
+            JdbcTemplate jdbcTemplate,
+            NewsService newsService,
+            CommentService commentService,
+            PostService postService,
+            BrowseHistoryService browseHistoryService) {
         this.jdbcTemplate = jdbcTemplate;
         this.newsService = newsService;
         this.commentService = commentService;
         this.postService = postService;
+        this.browseHistoryService = browseHistoryService;
     }
 
     public UserProfile profile(long userId) {
@@ -64,12 +72,16 @@ public class UserService {
         return newsService.favorites(userId);
     }
 
-    public List<CommentNode> comments(long userId) {
+    public List<UserCommentItem> comments(long userId) {
         return commentService.listByUser(userId);
     }
 
     public List<PostSummary> posts(long userId) {
         return postService.postsByUser(userId);
+    }
+
+    public List<BrowseHistoryItem> history(long userId) {
+        return browseHistoryService.list(userId);
     }
 
     private String pick(String next, String current) {

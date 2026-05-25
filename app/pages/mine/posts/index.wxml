@@ -1,13 +1,23 @@
 <view class="page-shell">
+  <view class="brand-strip">
+    <view class="back" bindtap="goBack">‹</view>
+    <text class="brand-title-mini">我的发布</text>
+  </view>
   <view class="section-title">
     <text>我的发布</text>
-    <button class="pill" bindtap="goPublish">发布</button>
   </view>
   <view wx:if="{{loading}}" class="state-box">正在加载...</view>
   <view wx:elif="{{error}}" class="state-box" bindtap="load">{{error}}，点击重试</view>
-  <view wx:elif="{{!items.length}}" class="state-box">还没有发布内容</view>
-  <view wx:else class="post-list">
-    <post-card wx:for="{{items}}" wx:key="id" item="{{item}}"></post-card>
+  <view wx:else>
+    <view wx:if="{{draft}}" class="draft-card" bindtap="goDraft">
+      <view class="draft-badge">草稿</view>
+      <view class="draft-title">{{draft.title || '未命名草稿'}}</view>
+      <view class="muted">点击继续编辑当前草稿</view>
+    </view>
+    <view wx:if="{{!items.length && !draft}}" class="state-box">还没有发布记录</view>
+    <view wx:if="{{items.length}}" class="post-list">
+      <post-card wx:for="{{items}}" wx:key="id" item="{{item}}"></post-card>
+    </view>
   </view>
   <auth-popup visible="{{showAuth}}" bind:cancel="hideAuth" bind:success="afterLogin"></auth-popup>
 </view>

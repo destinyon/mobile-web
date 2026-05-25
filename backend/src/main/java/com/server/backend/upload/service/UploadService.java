@@ -70,6 +70,23 @@ public class UploadService {
         return new UploadResult(publicBaseUrl.replaceAll("/$", "") + "/" + key, key);
     }
 
+    public void delete(String objectKey) {
+        if (objectKey == null || objectKey.isBlank() || objectKey.contains("..") || objectKey.startsWith("/")) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "文件地址不正确");
+        }
+        if (bucket == null || bucket.isBlank() || accessKeyId == null || accessKeyId.isBlank() || accessKeySecret == null || accessKeySecret.isBlank()) {
+            throw new BusinessException(HttpStatus.SERVICE_UNAVAILABLE, "OSS 配置缺失");
+        }
+        OSS oss = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+        try {
+            oss.deleteObject(bucket, objectKey.trim());
+        } catch (Exception ex) {
+            throw new BusinessException(HttpStatus.BAD_GATEWAY, "删除 OSS 文件失败");
+        } finally {
+            oss.shutdown();
+        }
+    }
+
     private String suffix(String filename, String contentType) {
         if (filename != null && filename.contains(".")) {
             return filename.substring(filename.lastIndexOf('.'));

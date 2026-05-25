@@ -1,10 +1,11 @@
 package com.server.backend.user.controller;
 
 import com.server.backend.auth.service.AuthService;
-import com.server.backend.comment.dto.CommentNode;
+import com.server.backend.comment.dto.UserCommentItem;
 import com.server.backend.common.ApiResponse;
 import com.server.backend.news.dto.NewsSummary;
 import com.server.backend.post.dto.PostSummary;
+import com.server.backend.user.dto.BrowseHistoryItem;
 import com.server.backend.user.dto.UpdateProfileRequest;
 import com.server.backend.user.dto.UserProfile;
 import com.server.backend.user.service.UserService;
@@ -42,12 +43,17 @@ public class UserController {
     }
 
     @GetMapping("/comments")
-    public ApiResponse<List<CommentNode>> comments(@RequestHeader("Authorization") String authorization) {
+    public ApiResponse<List<UserCommentItem>> comments(@RequestHeader("Authorization") String authorization) {
         return ApiResponse.ok(userService.comments(authService.requireUser(authorization).id()));
     }
 
     @GetMapping("/posts")
     public ApiResponse<List<PostSummary>> posts(@RequestHeader("Authorization") String authorization) {
         return ApiResponse.ok(userService.posts(authService.requireUser(authorization).id()));
+    }
+
+    @GetMapping("/history")
+    public ApiResponse<List<BrowseHistoryItem>> history(@RequestHeader("Authorization") String authorization) {
+        return ApiResponse.ok(userService.history(authService.requireUser(authorization).id()));
     }
 }

@@ -1,38 +1,39 @@
 <view class="page-shell home-shell">
   <view class="brand-bar">
     <view class="brand-title"><text class="brand-mark">羽</text>羽球在线</view>
-    <button class="home-link" bindtap="goCommunity">社区热帖</button>
   </view>
 
   <view class="search-entry" bindtap="goSearch">
     <text class="search-icon">⌕</text>
-    <text>搜索赛事、装备、训练技巧</text>
+    <text>搜索外部新闻、赛事讨论、社区交流、羽球装备</text>
   </view>
 
   <swiper wx:if="{{banners.length}}" class="banner" indicator-dots autoplay circular>
     <swiper-item wx:for="{{banners}}" wx:key="id">
-      <image class="banner-img" src="{{item.imageUrl || item.coverUrl || item.image}}" mode="aspectFill" bindtap="onBannerTap" data-item="{{item}}"></image>
+      <view class="banner-item" bindtap="onBannerTap" data-item="{{item}}">
+        <image class="banner-img" src="{{item.imageUrl}}" mode="aspectFill"></image>
+        <view class="banner-caption">{{item.title}}</view>
+      </view>
     </swiper-item>
   </swiper>
 
-  <scroll-view class="category-row" scroll-x enable-flex>
-    <button class="category {{activeCategory === '' ? 'active' : ''}}" bindtap="selectCategory" data-id="">全部</button>
-    <button wx:for="{{categories}}" wx:key="id" class="category {{activeCategory == item.id ? 'active' : ''}}" bindtap="selectCategory" data-id="{{item.id}}">
-      {{item.name}}
-    </button>
-  </scroll-view>
+  <view class="category-row">
+    <view wx:for="{{filters}}" wx:key="type" class="category {{activeFilter === item.type ? 'active' : ''}}" bindtap="selectFilter" data-type="{{item.type}}">
+      {{item.label}}
+    </view>
+  </view>
 
   <view class="section-title">
-    <text>近期热点资讯：</text>
+    <text>首页内容</text>
     <text class="muted">{{total ? total + ' 条' : ''}}</text>
   </view>
 
-  <view wx:if="{{loading}}" class="state-box">正在加载羽球资讯...</view>
+  <view wx:if="{{loading}}" class="state-box">正在加载内容...</view>
   <view wx:elif="{{error}}" class="state-box" bindtap="loadAll">{{error}}，点击重试</view>
-  <view wx:elif="{{!newsList.length}}" class="state-box">暂无新闻内容</view>
-  <view wx:else class="news-list">
-    <news-card wx:for="{{newsList}}" wx:key="id" item="{{item}}"></news-card>
+  <view wx:elif="{{!feedItems.length}}" class="state-box">暂无内容，切换分类看看</view>
+  <view wx:else class="post-list">
+    <post-card wx:for="{{feedItems}}" wx:key="feedKey" item="{{item}}"></post-card>
   </view>
 
-  <view wx:if="{{newsList.length}}" class="load-more muted">{{hasMore ? '上拉加载更多' : '没有更多了'}}</view>
+  <view wx:if="{{feedItems.length}}" class="load-more muted">{{hasMore ? '上拉加载更多' : '没有更多了'}}</view>
 </view>

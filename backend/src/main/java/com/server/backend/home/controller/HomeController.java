@@ -29,8 +29,11 @@ public class HomeController {
     @GetMapping("/banners")
     public ApiResponse<List<BannerItem>> banners() {
         return ApiResponse.ok(jdbcTemplate.query("""
-                SELECT id, title, image_url, link_type, link_target
-                FROM banners WHERE status = 'ACTIVE' ORDER BY sort_no ASC
+                SELECT id, title, cover_url AS image_url, 'NEWS' AS link_type, CAST(id AS CHAR) AS link_target
+                FROM news
+                WHERE status = 'PUBLISHED' AND cover_url IS NOT NULL AND cover_url <> ''
+                ORDER BY updated_at DESC, id DESC
+                LIMIT 5
                 """, (rs, rowNum) -> new BannerItem(
                 rs.getLong("id"),
                 rs.getString("title"),

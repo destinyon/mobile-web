@@ -13,6 +13,7 @@ Page({
     contentNodes: '',
     comments: [],
     commentContent: '',
+    replyContent: '',
     replyTarget: {},
     loading: true,
     submitting: false,
@@ -65,6 +66,10 @@ Page({
     this.setData({ commentContent: event.detail.value });
   },
 
+  onReplyInput(event) {
+    this.setData({ replyContent: event.detail.value });
+  },
+
   submitComment() {
     if (!this.data.commentContent.trim()) {
       wx.showToast({ title: '请输入评论内容', icon: 'none' });
@@ -73,12 +78,20 @@ Page({
     this.runProtected('comment');
   },
 
+  submitReply() {
+    if (!this.data.replyContent.trim()) {
+      wx.showToast({ title: '请输入回复内容', icon: 'none' });
+      return;
+    }
+    this.runProtected('reply');
+  },
+
   startReply(event) {
-    this.setData({ replyTarget: event.currentTarget.dataset.comment || {} });
+    this.setData({ replyTarget: event.currentTarget.dataset.comment || {}, replyContent: '' });
   },
 
   cancelReply() {
-    this.setData({ replyTarget: {} });
+    this.setData({ replyTarget: {}, replyContent: '' });
   },
 
   runProtected(action) {
@@ -95,16 +108,34 @@ Page({
         return api.createComment({
           targetType: 'NEWS',
           targetId: this.data.id,
-          parentId: this.data.replyTarget.id || undefined,
           content: this.data.commentContent.trim()
+        });
+      },
+      reply: () => {
+        this.setData({ submitting: true });
+        return api.createComment({
+          targetType: 'NEWS',
+          targetId: this.data.id,
+          parentId: this.data.replyTarget.id,
+          content: this.data.replyContent.trim()
         });
       }
     };
 
     taskMap[action]()
-      .then(() => {
-        wx.showToast({ title: '操作成功', icon: 'success' });
-        this.setData({ commentContent: '', replyTarget: {} });
+      .then((result) => {
+        if (action === 'like' || action === 'favorite') {
+          this.setData({
+            'detail.likeCount': result.likeCount,
+            'detail.favoriteCount': result.favoriteCount,
+            'detail.liked': result.liked,
+            'detail.favorited': result.favorited
+          });
+          wx.showToast({ title: action === 'like' ? (result.liked ? '已点赞' : '已取消点赞') : (result.favorited ? '已收藏' : '已取消收藏'), icon: 'none' });
+          return;
+        }
+        wx.showToast({ title: '已发布', icon: 'success' });
+        this.setData({ commentContent: '', replyContent: '', replyTarget: {} });
         this.loadDetail();
       })
       .catch((error) => {

@@ -1,0 +1,110 @@
+.brand-strip {
+  display: flex;
+  align-items: center;
+  height: 64rpx;
+  margin-bottom: 16rpx;
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  color: #172117;
+  font-size: 40rpx;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.brand-title-mini {
+  flex: 1;
+  padding-right: 48rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+  padding: 26rpx;
+}
+
+.avatar-edit {
+  position: relative;
+  align-self: center;
+  width: 146rpx;
+  height: 146rpx;
+  margin-bottom: 12rpx;
+  border: 2rpx solid #172117;
+  border-radius: 50%;
+  background: #dff5c9;
+}
+
+.avatar-edit image,
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #172117;
+  font-size: 54rpx;
+  font-weight: 900;
+}
+
+.avatar-mark {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46rpx;
+  height: 46rpx;
+  border: 2rpx solid #172117;
+  border-radius: 50%;
+  background: #baf279;
+  color: #172117;
+  font-size: 24rpx;
+  font-weight: 900;
+}
+
+.field-label {
+  color: #172117;
+  font-size: 25rpx;
+  font-weight: 900;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 80rpx;
+  padding: 0 20rpx;
+  border: 2rpx solid #d6dfcf;
+  border-radius: 10rpx;
+  background: #ffffff;
+  color: #172117;
+  font-size: 28rpx;
+}
+
+.select-field {
+  color: #172117;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+
+.primary-btn {
+  margin-top: 18rpx;
+}

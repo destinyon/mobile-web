@@ -5,28 +5,107 @@ function itemsOf(data) {
   return data.items || data.records || data.list || [];
 }
 
+function timeValue(value) {
+  if (!value) return 0;
+  const time = new Date(value).getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
+function asNewsItem(item) {
+  return {
+    ...item,
+    feedType: 'NEWS',
+    feedKey: `NEWS-${item.id}`,
+    categoryName: '外部新闻',
+    status: '',
+    updatedAt: item.updatedAt || item.createdAt || '',
+    sortTime: timeValue(item.updatedAt || item.createdAt)
+  };
+}
+
+function asPostItem(item) {
+  return {
+    ...item,
+    feedType: 'POST',
+    feedKey: `POST-${item.id}`,
+    categoryName: item.topicName || item.categoryName || '球友社区',
+    updatedAt: item.updatedAt || item.createdAt || '',
+    sortTime: timeValue(item.updatedAt || item.createdAt)
+  };
+}
+
 Page({
   data: {
     keyword: '',
-    newsList: [],
+    filters: [
+      { type: 'all', label: '全部' },
+      { type: 'news', label: '外部新闻' }
+    ],
+    activeFilter: 'all',
+    items: [],
     loading: false,
     searched: false,
     error: ''
+  },
+
+  onLoad() {
+    api.getTopics()
+      .then((topics) => {
+        const topicFilters = itemsOf(topics).map((item) => ({
+          type: `topic-${item.id}`,
+          label: item.name,
+          topicId: item.id
+        }));
+        this.setData({
+          filters: [
+            { type: 'all', label: '全部' },
+            { type: 'news', label: '外部新闻' }
+          ].concat(topicFilters)
+        });
+      })
+      .catch((error) => wx.showToast({ title: error.msg || '类别加载失败', icon: 'none' }));
+  },
+
+  goBack() {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.switchTab({ url: '/pages/home/index' });
+    }
   },
 
   onInput(event) {
     this.setData({ keyword: event.detail.value });
   },
 
-  onSearch() {
-    const keyword = this.data.keyword.trim();
-    if (!keyword) {
-      wx.showToast({ title: '请输入关键词', icon: 'none' });
-      return;
+  selectFilter(event) {
+    this.setData({ activeFilter: event.currentTarget.dataset.type || 'all' });
+    if (this.data.searched || this.data.keyword.trim()) {
+      this.onSearch();
     }
+  },
+
+  onSearch() {
+    const filter = this.data.filters.find((item) => item.type === this.data.activeFilter) || this.data.filters[0];
+    const params = {
+      keyword: this.data.keyword.trim() || undefined,
+      page: 1,
+      pageSize: 30,
+      sort: 'latest'
+    };
     this.setData({ loading: true, searched: true, error: '' });
-    api.getNews({ keyword, page: 1, pageSize: 20 })
-      .then((data) => this.setData({ newsList: itemsOf(data) }))
+
+    const request = filter.type === 'news'
+      ? api.getNews(params).then((data) => itemsOf(data).map(asNewsItem))
+      : filter.topicId
+        ? api.getCommunityPosts({ ...params, topicId: filter.topicId }).then((data) => itemsOf(data).map(asPostItem))
+        : Promise.all([api.getNews(params), api.getCommunityPosts(params)]).then(([news, posts]) => itemsOf(news).map(asNewsItem)
+          .concat(itemsOf(posts).map(asPostItem))
+          .sort((left, right) => right.sortTime - left.sortTime));
+
+    request
+      .then((items) => this.setData({ items }))
       .catch((error) => this.setData({ error: error.msg || '搜索失败' }))
       .finally(() => this.setData({ loading: false }));
   }

@@ -1,16 +1,17 @@
 <view class="post-card" bindtap="onTap">
-  <view class="post-head">
-    <view class="topic">{{item.topicName || '球友社区'}}</view>
-    <view class="status">{{item.status === 'PUBLISHED' ? '已发布' : item.status || ''}}</view>
-  </view>
-  <view class="title">{{item.title}}</view>
-  <view class="content">{{item.content}}</view>
-  <view wx:if="{{item.images && item.images.length}}" class="image-row">
-    <image wx:for="{{item.images}}" wx:key="*this" wx:if="{{index < 3}}" class="thumb" src="{{item}}" mode="aspectFill"></image>
-  </view>
-  <view class="meta">
-    <text>{{item.nickname || '球友'}}</text>
-    <text>{{item.likeCount || 0}} 赞</text>
-    <text>{{item.commentCount || 0}} 评</text>
+  <image wx:if="{{item.coverUrl || item.imageUrl || item.image || item.cover}}" class="cover" src="{{item.coverUrl || item.imageUrl || item.image || item.cover}}" mode="aspectFill"></image>
+  <view wx:else class="cover cover-placeholder">羽</view>
+  <view class="post-body">
+    <view class="post-head">
+      <view class="topic">{{item.categoryName || item.topicName || '球友社区'}}</view>
+      <view class="status">{{item.status === 'PUBLISHED' ? '已发布' : item.status || ''}}</view>
+    </view>
+    <view class="title">{{item.title}}</view>
+    <view class="meta">
+      <text>浏览 {{item.viewCount || 0}}</text>
+      <text>点赞 {{item.likeCount || 0}}</text>
+      <text>收藏 {{item.favoriteCount || 0}}</text>
+      <text>{{item.updatedAt || ''}}</text>
+    </view>
   </view>
 </view>

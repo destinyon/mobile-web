@@ -11,6 +11,7 @@ public record PostSummary(
         String nickname,
         String avatarUrl,
         String title,
+        String coverUrl,
         String content,
         List<String> images,
         int viewCount,

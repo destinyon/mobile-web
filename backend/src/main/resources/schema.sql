@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS topics;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS likes;
+DROP TABLE IF EXISTS browse_history;
 DROP TABLE IF EXISTS banners;
 DROP TABLE IF EXISTS admin_logs;
 
@@ -68,6 +69,7 @@ CREATE TABLE IF NOT EXISTS posts (
     topic_id BIGINT,
     user_id BIGINT NOT NULL,
     title VARCHAR(120) NOT NULL,
+    cover_url VARCHAR(512) NOT NULL DEFAULT '',
     content LONGTEXT NOT NULL,
     images VARCHAR(2000),
     view_count INT NOT NULL DEFAULT 0,
@@ -106,6 +108,15 @@ CREATE TABLE IF NOT EXISTS likes (
     target_id BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uk_likes_target (user_id, target_type, target_id)
+);
+
+CREATE TABLE IF NOT EXISTS browse_history (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    target_type VARCHAR(20) NOT NULL,
+    target_id BIGINT NOT NULL,
+    viewed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_browse_history_target (user_id, target_type, target_id)
 );
 
 CREATE TABLE IF NOT EXISTS banners (

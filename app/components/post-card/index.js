@@ -10,7 +10,10 @@ Component({
     onTap() {
       const id = this.data.item.id || this.data.item.postId;
       if (!id) return;
-      wx.navigateTo({ url: `/pages/post/detail/index?id=${id}` });
+      const target = this.data.item.feedType === 'NEWS'
+        ? `/pages/news/detail/index?id=${id}`
+        : `/pages/post/detail/index?id=${id}`;
+      wx.navigateTo({ url: target });
     }
   }
 });

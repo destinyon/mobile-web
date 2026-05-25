@@ -1,25 +1,61 @@
-<view class="page-shell">
+<view class="page-shell editor-shell">
   <view class="brand-bar">
-    <view class="brand-title">发布社区帖子</view>
+    <view class="brand-title"><text class="brand-mark">{{mode === 'edit' ? '改' : '写'}}</text>{{mode === 'edit' ? '编辑投稿' : '发布投稿'}}</view>
+    <view class="draft-state">{{mode === 'draft' ? (savingDraft ? '保存中' : '已暂存') : '作者编辑'}}</view>
   </view>
 
   <view class="form card">
+    <view class="field-label">投稿类别</view>
     <view class="topic-grid">
-      <button wx:for="{{topics}}" wx:key="id" class="topic {{form.topicId == item.id ? 'active' : ''}}" bindtap="selectTopic" data-id="{{item.id}}">
-        {{item.name}}
-      </button>
-    </view>
-    <input class="field" value="{{form.title}}" placeholder="标题" bindinput="onField" data-key="title" />
-    <textarea class="textarea content" value="{{form.content}}" placeholder="写下赛事讨论、训练心得、器材交流或约战信息" maxlength="5000" bindinput="onField" data-key="content"></textarea>
-    <input class="field" value="{{imageInput}}" placeholder="配图 URL，可选" bindinput="onImageInput" />
-    <button class="secondary-btn" bindtap="addImage">添加配图</button>
-    <view wx:if="{{form.images.length}}" class="image-list">
-      <view wx:for="{{form.images}}" wx:key="*this" class="image-item">
-        <text>{{item}}</text>
-        <button bindtap="removeImage" data-index="{{index}}">移除</button>
+      <view wx:for="{{topics}}" wx:key="id" class="topic {{form.topicId == item.id ? 'active' : ''}}" bindtap="selectTopic" data-id="{{item.id}}">
+        <text class="topic-name">{{item.name}}</text>
       </view>
     </view>
-    <button class="primary-btn" loading="{{submitting}}" bindtap="submit">提交发布</button>
+
+    <view class="field-label">标题</view>
+    <input class="field title-field" value="{{form.title}}" placeholder="写一个清楚的投稿标题" maxlength="120" bindinput="onField" data-key="title" />
+
+    <view class="field-label">封面图</view>
+    <view wx:if="{{form.coverUrl}}" class="cover-preview">
+      <image src="{{form.coverUrl}}" mode="aspectFill"></image>
+      <view class="icon-btn danger" bindtap="removeCover">×</view>
+    </view>
+    <button wx:else class="upload-box" loading="{{uploadingCover}}" bindtap="chooseCover">
+      <text class="upload-icon">▧</text>
+      <text>{{uploadingCover ? '上传中' : '上传封面'}}</text>
+    </button>
+
+    <view class="field-label">文章内容</view>
+    <textarea class="textarea content" value="{{form.content}}" placeholder="写下你的观点、经验或装备体验" maxlength="5000" bindinput="onField" data-key="content"></textarea>
+
+    <view class="field-label row-label">
+      <text>上传配图</text>
+      <button class="small-action" loading="{{uploadingImage}}" bindtap="chooseImages">＋ 图片 {{form.images.length}}/9</button>
+    </view>
+    <view wx:if="{{form.images.length}}" class="image-grid">
+      <view
+        wx:for="{{form.images}}"
+        wx:key="url"
+        class="image-item {{dragIndex === index ? 'dragging' : ''}} {{dragTargetIndex === index && dragIndex !== index ? 'drop-target' : ''}}"
+        style="{{dragIndex === index ? dragStyle : ''}}"
+        data-index="{{index}}"
+        bindtouchstart="prepareImageDrag"
+        bindlongpress="startImageDrag"
+        catchtouchmove="moveImageDrag"
+        bindtouchend="endImageDrag"
+        bindtouchcancel="endImageDrag"
+      >
+        <image src="{{item.url || item}}" mode="aspectFill"></image>
+        <view class="image-order">{{index + 1}}</view>
+        <view class="icon-mini danger" catchtap="removeImage" data-index="{{index}}">×</view>
+      </view>
+    </view>
+    <view wx:else class="empty-inline">配图会回显在正文下方，长按图片可拖拽换位置</view>
+  </view>
+
+  <view class="bottom-actions">
+    <button wx:if="{{mode === 'draft'}}" class="secondary-btn" bindtap="saveDraft">暂存草稿</button>
+    <button class="primary-btn" loading="{{submitting}}" bindtap="submit">{{mode === 'edit' ? '保存修改' : '发布投稿'}}</button>
   </view>
 
   <auth-popup visible="{{showAuth}}" bind:cancel="hideAuth" bind:success="afterLogin"></auth-popup>

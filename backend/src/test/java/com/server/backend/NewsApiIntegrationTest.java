@@ -49,6 +49,18 @@ class NewsApiIntegrationTest {
     }
 
     @Test
+    void homepageBannersUseLatestNewsCovers() throws Exception {
+        mockMvc.perform(get("/api/banners"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data", hasSize(greaterThan(0))))
+                .andExpect(jsonPath("$.data[0].title").value("测试羽毛球新闻"))
+                .andExpect(jsonPath("$.data[0].imageUrl").value("https://example.test/cover.jpg"))
+                .andExpect(jsonPath("$.data[0].linkType").value("NEWS"))
+                .andExpect(jsonPath("$.data[0].linkTarget").value("1"));
+    }
+
+    @Test
     void returnsNewsDetailWithCommentsEnvelope() throws Exception {
         mockMvc.perform(get("/api/news/1"))
                 .andExpect(status().isOk())

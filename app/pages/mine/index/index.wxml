@@ -7,7 +7,6 @@
     <view class="profile-left" bindtap="ensureLogin">
       <image wx:if="{{profile.avatarUrl || profile.avatar}}" class="avatar" src="{{profile.avatarUrl || profile.avatar}}" mode="aspectFill"></image>
       <view wx:else class="avatar avatar-placeholder">羽</view>
-      <view class="avatar-change" bindtap="ensureLogin">{{profile.id ? '更换头像' : '登录'}}</view>
     </view>
     <view class="profile-info">
       <view class="info-cell">
@@ -15,8 +14,8 @@
         <text>{{profile.nickname || profile.nickName || '未登录球友'}}</text>
       </view>
       <view class="info-cell">
-        <text class="info-icon">▯</text>
-        <text>{{profile.mobile || profile.phone || '177xxxxxxx'}}</text>
+        <text class="info-icon">📱</text>
+        <text>{{profile.mobile || profile.phone || 'xxxxxxxxxx'}}</text>
       </view>
       <view class="info-cell">
         <text class="info-icon">▣</text>
@@ -60,7 +59,7 @@
       <view class="service-text">修改资料</view>
       <view class="service-arrow">›</view>
     </view>
-    <view class="service-item">
+    <view class="service-item" bindtap="goSettings">
       <view class="service-icon">⚙</view>
       <view class="service-text">设置</view>
       <view class="service-arrow">›</view>

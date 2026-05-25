@@ -34,16 +34,30 @@
 
 .avatar-edit {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   align-self: center;
   width: 146rpx;
   height: 146rpx;
   margin-bottom: 12rpx;
+  border-radius: 50%;
+  overflow: visible;
+}
+
+.avatar-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 146rpx;
+  height: 146rpx;
   border: 2rpx solid #172117;
   border-radius: 50%;
   background: #dff5c9;
+  overflow: hidden;
 }
 
-.avatar-edit image,
+.avatar-frame image,
 .avatar-placeholder {
   width: 100%;
   height: 100%;

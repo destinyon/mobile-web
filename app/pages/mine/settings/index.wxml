@@ -1,0 +1,41 @@
+<view class="page-shell settings-shell">
+  <view class="brand-strip">
+    <view class="back" bindtap="goBack">‹</view>
+    <text class="brand-title-mini">设置</text>
+  </view>
+
+  <view class="about-card card">
+    <view class="mascot">羽</view>
+    <view class="about-main">
+      <view class="about-title">羽球在线</view>
+      <view class="about-desc">和球友一起看资讯、聊比赛、记下每一次热爱。</view>
+    </view>
+  </view>
+
+  <view class="intro-list">
+    <view class="intro-item">
+      <view class="intro-icon">✦</view>
+      <view>
+        <view class="intro-title">新鲜资讯</view>
+        <view class="intro-desc">聚合羽毛球动态，碎片时间也能跟上赛场节奏。</view>
+      </view>
+    </view>
+    <view class="intro-item">
+      <view class="intro-icon">☘</view>
+      <view>
+        <view class="intro-title">球友社区</view>
+        <view class="intro-desc">发布训练心得、装备体验和比赛小故事。</view>
+      </view>
+    </view>
+    <view class="intro-item">
+      <view class="intro-icon">♡</view>
+      <view>
+        <view class="intro-title">个人记录</view>
+        <view class="intro-desc">收藏、评论和浏览记录都放在这里，回看更方便。</view>
+      </view>
+    </view>
+  </view>
+
+  <button wx:if="{{loggedIn}}" class="logout-btn" bindtap="logout">退出登录</button>
+  <button wx:else class="secondary-btn" bindtap="goMine">返回我的</button>
+</view>

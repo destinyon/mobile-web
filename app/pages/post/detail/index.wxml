@@ -73,8 +73,8 @@
     <view class="toolbar-comment">▣</view>
     <input class="toolbar-input" value="{{commentContent}}" placeholder="不要忘记友善评论哦！" confirm-type="send" bindinput="onCommentInput" bindconfirm="submitComment" />
     <view class="toolbar-send" bindtap="submitComment">↗</view>
-    <view class="toolbar-action like-action {{detail.liked ? 'active' : ''}}" bindtap="onLike">👍</view>
-    <view class="toolbar-action favorite-action {{detail.favorited ? 'active' : ''}}" bindtap="onFavorite">☆</view>
+    <view class="toolbar-action like-action {{detail.liked ? 'active' : ''}}" bindtap="onLike">{{detail.liked ? '♥' : '♡'}}</view>
+    <view class="toolbar-action favorite-action {{detail.favorited ? 'active' : ''}}" bindtap="onFavorite">{{detail.favorited ? '★' : '☆'}}</view>
   </view>
 
   <auth-popup visible="{{showAuth}}" bind:cancel="hideAuth" bind:success="afterLogin"></auth-popup>

@@ -230,7 +230,8 @@
   width: 48rpx;
   height: 48rpx;
   color: #172117;
-  font-size: 32rpx;
+  border-radius: 50%;
+  font-size: 34rpx;
   font-weight: 900;
 }
 
@@ -251,9 +252,11 @@
 }
 
 .like-action.active {
+  background: #ffe4df;
   color: #e0563f;
 }
 
 .favorite-action.active {
-  color: #2b7f56;
+  background: #fff0b8;
+  color: #d08b00;
 }

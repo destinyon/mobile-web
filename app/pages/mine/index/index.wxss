@@ -4,7 +4,7 @@
 
 .profile-panel {
   display: grid;
-  grid-template-columns: 142rpx 1fr;
+  grid-template-columns: 126rpx 1fr;
   gap: 28rpx;
   align-items: center;
   padding: 8rpx 0 18rpx;
@@ -22,33 +22,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 112rpx;
   width: 112rpx;
   height: 112rpx;
   border: 2rpx solid #172117;
   border-radius: 50%;
   background: #dff5c9;
+  overflow: hidden;
 }
 
 .avatar-placeholder {
   color: #172117;
   font-size: 46rpx;
   font-weight: 900;
-}
-
-.avatar-change {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 116rpx;
-  height: 42rpx;
-  padding: 0 10rpx;
-  border: 2rpx solid #5f9f86;
-  border-radius: 6rpx;
-  background: #68b79a;
-  color: #ffffff;
-  box-sizing: border-box;
-  font-size: 20rpx;
-  font-weight: 800;
 }
 
 .profile-info {

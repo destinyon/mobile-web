@@ -15,6 +15,8 @@ Page({
     }
     if (wx.getStorageSync('token')) {
       this.loadProfile();
+    } else {
+      this.resetProfile();
     }
   },
 
@@ -26,6 +28,15 @@ Page({
         if (isAuthError(error)) return;
         this.setData({ error: error.msg || '资料加载失败' });
       });
+  },
+
+  resetProfile() {
+    this.setData({
+      profile: {},
+      showAuth: false,
+      pendingUrl: '',
+      error: ''
+    });
   },
 
   ensureLogin() {
@@ -43,6 +54,10 @@ Page({
       return;
     }
     wx.navigateTo({ url });
+  },
+
+  goSettings() {
+    wx.navigateTo({ url: '/pages/mine/settings/index' });
   },
 
   hideAuth() {

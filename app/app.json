@@ -11,7 +11,8 @@
     "pages/mine/favorites/index",
     "pages/mine/history/index",
     "pages/mine/comments/index",
-    "pages/mine/posts/index"
+    "pages/mine/posts/index",
+    "pages/mine/settings/index"
   ],
   "window": {
     "navigationBarTitleText": "羽球在线",

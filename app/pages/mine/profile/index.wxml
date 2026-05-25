@@ -7,8 +7,10 @@
   <view wx:if="{{loading}}" class="state-box">正在加载资料...</view>
   <view wx:else class="profile-form card">
     <button class="avatar-edit" loading="{{uploading}}" bindtap="chooseAvatar">
-      <image wx:if="{{form.avatarUrl}}" src="{{form.avatarUrl}}" mode="aspectFill"></image>
-      <view wx:else class="avatar-placeholder">羽</view>
+      <view class="avatar-frame">
+        <image wx:if="{{form.avatarUrl}}" src="{{form.avatarUrl}}" mode="aspectFill"></image>
+        <view wx:else class="avatar-placeholder">羽</view>
+      </view>
       <view class="avatar-mark">✎</view>
     </button>
 

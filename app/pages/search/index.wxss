@@ -56,13 +56,13 @@
 }
 
 .search-btn {
-  width: 116rpx;
-  min-height: 72rpx;
+  width: 88rpx;
+  min-height: 60rpx;
   border: 2rpx solid #172117;
   border-radius: 8rpx;
   background: #baf279;
   color: #172117;
-  font-size: 27rpx;
+  font-size: 24rpx;
   font-weight: 800;
 }
 

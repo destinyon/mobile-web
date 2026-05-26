@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,6 +30,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class NeteaseNewsSyncServiceTest {
     private static final String NEW_LONG_TITLE = "2026国际青年羽毛球挑战赛在靖江落幕：以完整长标题验证入库时不做截取"
             + "羽球交流合作".repeat(30);
+    private static final List<Integer> FETCHED_PAGES = new ArrayList<>();
+    private static final List<String> FETCHED_DETAILS = new ArrayList<>();
 
     @Autowired
     private NeteaseNewsSyncService syncService;
@@ -43,6 +46,8 @@ class NeteaseNewsSyncServiceTest {
         jdbcTemplate.update("DELETE FROM likes WHERE target_type = 'NEWS'");
         jdbcTemplate.update("DELETE FROM news");
         jdbcTemplate.update("DELETE FROM users WHERE id = 200");
+        FETCHED_PAGES.clear();
+        FETCHED_DETAILS.clear();
     }
 
     @Test
@@ -68,10 +73,12 @@ class NeteaseNewsSyncServiceTest {
 
         NeteaseNewsSyncResult result = syncService.syncLatest();
 
-        assertThat(result.pages()).isEqualTo(2);
-        assertThat(result.fetched()).isEqualTo(4);
+        assertThat(result.pages()).isEqualTo(1);
+        assertThat(result.fetched()).isEqualTo(3);
         assertThat(result.inserted()).isEqualTo(1);
-        assertThat(result.skipped()).isEqualTo(3);
+        assertThat(result.skipped()).isEqualTo(1);
+        assertThat(FETCHED_PAGES).containsExactly(1);
+        assertThat(FETCHED_DETAILS).containsExactly("KTFNEW000000001");
 
         Integer oldNews = jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM news WHERE source = 'LOCAL'",
@@ -101,7 +108,7 @@ class NeteaseNewsSyncServiceTest {
         String existingContent = jdbcTemplate.queryForObject(
                 "SELECT content FROM news WHERE source_id = 'KTFNN2O7053469KC'",
                 String.class);
-        assertThat(existingContent).isEqualTo("<p>旧正文</p>");
+        assertThat(existingContent).isEqualTo("<p>旧正文</p><script>alert(1)</script>");
 
         String title = jdbcTemplate.queryForObject(
                 "SELECT title FROM news WHERE source_id = 'KTFNEW000000001'",
@@ -164,11 +171,12 @@ class NeteaseNewsSyncServiceTest {
             return new NeteaseNewsClient() {
                 @Override
                 public List<NeteaseNewsItem> fetchList(int page) {
+                    FETCHED_PAGES.add(page);
                     if (page == 1) {
                         return List.of(
+                                new NeteaseNewsItem("KTFNEW000000001", NEW_LONG_TITLE, "https://www.163.com/dy/article/KTFNEW000000001.html"),
                                 new NeteaseNewsItem("KTFNN2O7053469KC", "用羽毛球搭建沟通桥梁", "https://www.163.com/dy/article/KTFNN2O7053469KC.html"),
-                                new NeteaseNewsItem("KTFM09770549753N", "陆光祖复仇晋级", "https://www.163.com/dy/article/KTFM09770549753N.html"),
-                                new NeteaseNewsItem("KTFNEW000000001", NEW_LONG_TITLE, "https://www.163.com/dy/article/KTFNEW000000001.html")
+                                new NeteaseNewsItem("KTFM09770549753N", "陆光祖复仇晋级", "https://www.163.com/dy/article/KTFM09770549753N.html")
                         );
                     }
                     return List.of(new NeteaseNewsItem("EMPTY", "空正文新闻", "https://www.163.com/dy/article/EMPTY.html"));
@@ -176,6 +184,7 @@ class NeteaseNewsSyncServiceTest {
 
                 @Override
                 public NeteaseNewsDetail fetchDetail(NeteaseNewsItem item) {
+                    FETCHED_DETAILS.add(item.sourceId());
                     if ("EMPTY".equals(item.sourceId())) {
                         return new NeteaseNewsDetail(item.sourceId(), item.title(), item.url(), "网易体育", "", "", "", LocalDateTime.of(2026, 5, 21, 20, 30));
                     }

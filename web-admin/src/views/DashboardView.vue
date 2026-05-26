@@ -43,7 +43,6 @@ const {
   pageSize,
   newsLoading,
   syncingNews,
-  deletingId,
   pageError,
   newsResult,
   usersKeyword,
@@ -124,7 +123,6 @@ const {
       </header>
 
       <p v-if="pageError" class="page-error">{{ pageError }}</p>
-      <p v-if="deletingId" class="page-note">正在下架 ID {{ deletingId }}</p>
 
       <section v-if="activeSection === 'overview'" class="section-stack">
         <section class="metric-grid">
@@ -178,19 +176,6 @@ const {
 
       <section v-else-if="activeSection === 'rankings'" class="section-stack">
         <RankingPanel :items="rankings" :loading="rankingsLoading" @view="openDetail" />
-        <section class="ranking-table">
-          <button
-            v-for="item in rankings"
-            :key="item.id"
-            type="button"
-            class="ranking-card"
-            @click="openDetail(item)"
-          >
-            <strong>{{ item.title }}</strong>
-            <span>{{ item.categoryName || '未分类' }}</span>
-            <em>热度 {{ item.heatScore }}</em>
-          </button>
-        </section>
       </section>
 
       <section v-else class="section-stack">

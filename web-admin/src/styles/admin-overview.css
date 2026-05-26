@@ -98,7 +98,7 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: conic-gradient(#13795b 0 var(--published), #d9e4df var(--published) 100%);
+  background: conic-gradient(var(--category-gradient));
   position: relative;
 }
 
@@ -147,9 +147,11 @@
   border-radius: 50%;
 }
 
-.legend-published { background: var(--court); }
-.legend-offline { background: #a7b6ae; }
-.legend-post { background: var(--lime); }
+.legend-category-0 { background: #13795b; }
+.legend-category-1 { background: #c8f24e; }
+.legend-category-2 { background: #f3b343; }
+.legend-category-3 { background: #6b9fd8; }
+.legend-category-4 { background: #9f7aea; }
 
 .heat-chart {
   display: grid;

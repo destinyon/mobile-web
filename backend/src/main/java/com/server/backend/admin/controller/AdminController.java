@@ -85,9 +85,9 @@ public class AdminController {
     @PostMapping("/news/sync")
     public ApiResponse<NeteaseNewsSyncResult> syncNews(
             @RequestHeader("Authorization") String authorization,
-            @RequestParam(defaultValue = "1") int pages) {
+            @RequestParam(required = false) Integer pages) {
         requireAdmin(authorization);
-        return ApiResponse.ok(neteaseNewsSyncService.syncLatest(pages));
+        return ApiResponse.ok(pages == null ? neteaseNewsSyncService.syncLatest() : neteaseNewsSyncService.syncLatest(pages));
     }
 
     @GetMapping("/users")

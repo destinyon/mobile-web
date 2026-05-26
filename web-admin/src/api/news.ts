@@ -67,7 +67,7 @@ export function listCategories(): Promise<CategoryItem[]> {
   return apiRequest<CategoryItem[]>('/api/categories');
 }
 
-export function syncNews(pages = 1): Promise<NewsSyncResult> {
+export function syncNews(pages?: number): Promise<NewsSyncResult> {
   return apiRequest<NewsSyncResult>('/api/admin/news/sync', {
     method: 'POST',
     query: { pages }

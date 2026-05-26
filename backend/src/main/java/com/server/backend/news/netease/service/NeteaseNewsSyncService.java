@@ -5,6 +5,7 @@ import com.server.backend.news.netease.NeteaseNewsDetail;
 import com.server.backend.news.netease.NeteaseNewsItem;
 import com.server.backend.news.netease.NeteaseNewsProperties;
 import com.server.backend.news.netease.NeteaseNewsSyncResult;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -39,15 +40,17 @@ public class NeteaseNewsSyncService {
     }
 
     public NeteaseNewsSyncResult syncLatest(int requestedPages) {
-        cleanExistingNeteaseContent();
         int fetched = 0;
         int inserted = 0;
         int skipped = 0;
         int pages = Math.max(1, Math.min(10, requestedPages));
         Set<String> imported = new HashSet<>();
         LocalDateTime latestImportedAt = latestImportedAt();
-        for (int page = 1; page <= pages; page++) {
+        int scannedPages = 0;
+        boolean reachedImportedNews = false;
+        for (int page = 1; page <= pages && !reachedImportedNews; page++) {
             List<NeteaseNewsItem> items = client.fetchList(page);
+            scannedPages++;
             fetched += items.size();
             for (NeteaseNewsItem item : items) {
                 if (!imported.add(item.sourceId())) {
@@ -56,13 +59,18 @@ public class NeteaseNewsSyncService {
                 }
                 if (exists(item.sourceId())) {
                     skipped++;
-                    continue;
+                    reachedImportedNews = true;
+                    break;
                 }
                 NeteaseNewsDetail detail = client.fetchDetail(item);
+                if (!isNewer(detail.publishedAt(), latestImportedAt)) {
+                    skipped++;
+                    reachedImportedNews = true;
+                    break;
+                }
                 String cover = firstNonBlank(detail.coverUrl(), properties.getDefaultCoverUrl(), DEFAULT_COVER_URL);
                 String content = sanitizer.sanitize(detail.content(), cover);
-                if (content.isBlank()
-                        || !isNewer(detail.publishedAt(), latestImportedAt)) {
+                if (content.isBlank()) {
                     skipped++;
                     continue;
                 }
@@ -73,28 +81,32 @@ public class NeteaseNewsSyncService {
                 }
             }
         }
-        return new NeteaseNewsSyncResult(pages, fetched, inserted, skipped);
+        return new NeteaseNewsSyncResult(scannedPages, fetched, inserted, skipped);
     }
 
     private boolean insert(NeteaseNewsDetail item, String cover, String content) {
         LocalDateTime publishedAt = item.publishedAt() == null ? LocalDateTime.now() : item.publishedAt();
-        int rows = jdbcTemplate.update("""
-                INSERT IGNORE INTO news(category_id, user_id, title, cover_url, summary, author, content, media_url, media_type,
-                                 source, source_id, source_url, status, created_at, updated_at)
-                VALUES(?, NULL, ?, ?, ?, ?, ?, ?, 'IMAGE', 'NETEASE', ?, ?, 'PUBLISHED', ?, ?)
-                """,
-                properties.getCategoryId(),
-                item.title(),
-                cover,
-                item.summary(),
-                item.author(),
-                content,
-                cover,
-                item.sourceId(),
-                item.url(),
-                Timestamp.valueOf(publishedAt),
-                Timestamp.valueOf(publishedAt));
-        return rows > 0;
+        try {
+            int rows = jdbcTemplate.update("""
+                    INSERT INTO news(category_id, user_id, title, cover_url, summary, author, content, media_url, media_type,
+                                     source, source_id, source_url, status, created_at, updated_at)
+                    VALUES(?, NULL, ?, ?, ?, ?, ?, ?, 'IMAGE', 'NETEASE', ?, ?, 'PUBLISHED', ?, ?)
+                    """,
+                    properties.getCategoryId(),
+                    item.title(),
+                    cover,
+                    item.summary(),
+                    item.author(),
+                    content,
+                    cover,
+                    item.sourceId(),
+                    item.url(),
+                    Timestamp.valueOf(publishedAt),
+                    Timestamp.valueOf(publishedAt));
+            return rows > 0;
+        } catch (DuplicateKeyException ex) {
+            return false;
+        }
     }
 
     private LocalDateTime latestImportedAt() {
@@ -115,20 +127,6 @@ public class NeteaseNewsSyncService {
 
     private boolean isNewer(LocalDateTime publishedAt, LocalDateTime latestImportedAt) {
         return publishedAt == null || latestImportedAt == null || publishedAt.isAfter(latestImportedAt);
-    }
-
-    private void cleanExistingNeteaseContent() {
-        jdbcTemplate.query("""
-                SELECT id, content, cover_url
-                FROM news
-                WHERE source = 'NETEASE' AND content LIKE '%<%'
-                """, rs -> {
-            long id = rs.getLong("id");
-            String cleaned = sanitizer.sanitize(rs.getString("content"), rs.getString("cover_url"));
-            if (!cleaned.isBlank()) {
-                jdbcTemplate.update("UPDATE news SET content = ? WHERE id = ?", cleaned, id);
-            }
-        });
     }
 
     private String firstNonBlank(String... values) {

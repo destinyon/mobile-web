@@ -136,6 +136,8 @@
 .pager-actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .pager-actions button {
@@ -147,6 +149,19 @@
   place-items: center;
   background: #fff;
   color: var(--ink);
+}
+
+.pager-actions .page-number {
+  width: auto;
+  min-width: 34px;
+  padding: 0 10px;
+  font-weight: 800;
+}
+
+.pager-actions .page-number.active {
+  border-color: var(--court);
+  background: #e7f4ec;
+  color: var(--court-strong);
 }
 
 .user-table th:nth-child(1) { width: 28%; }

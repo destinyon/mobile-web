@@ -36,7 +36,6 @@ export function useAdminDashboard(onLogout: (reason?: string) => void) {
   const pageSize = 12;
   const newsLoading = ref(false);
   const syncingNews = ref(false);
-  const deletingId = ref<number | null>(null);
   const pageError = ref('');
   const newsResult = ref<PageResult<NewsSummary>>({ items: [], total: 0, page: 1, pageSize });
   const usersKeyword = ref('');
@@ -234,15 +233,12 @@ export function useAdminDashboard(onLogout: (reason?: string) => void) {
     if (!confirmed) {
       return;
     }
-    deletingId.value = item.id;
     pageError.value = '';
     try {
       await deleteNews(item.id);
       await Promise.all([loadNews(), loadOverview(), loadRankings()]);
     } catch (err) {
       handleError(err);
-    } finally {
-      deletingId.value = null;
     }
   }
 
@@ -290,7 +286,6 @@ export function useAdminDashboard(onLogout: (reason?: string) => void) {
     pageSize,
     newsLoading,
     syncingNews,
-    deletingId,
     pageError,
     newsResult,
     usersKeyword,

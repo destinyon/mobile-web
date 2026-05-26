@@ -188,8 +188,7 @@
   background: #fff;
 }
 
-.page-error,
-.page-note {
+.page-error {
   margin: 0 0 12px;
   padding: 10px 12px;
   border-radius: 8px;
@@ -199,10 +198,4 @@
   border: 1px solid #efc2bc;
   background: #fff2ef;
   color: #a93a2f;
-}
-
-.page-note {
-  border: 1px solid #cfe3d6;
-  background: #f0faf3;
-  color: #23624e;
 }

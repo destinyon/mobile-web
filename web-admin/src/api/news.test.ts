@@ -177,4 +177,22 @@ describe('news API', () => {
     expect(init?.method).toBe('POST');
     expect(result.inserted).toBe(10);
   });
+
+  it('starts the default backend news sync without forcing a page limit', async () => {
+    const fetchSpy = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => new Response(
+      JSON.stringify({
+        success: true,
+        data: { pages: 10, fetched: 50, inserted: 1, skipped: 49 },
+        msg: 'ok'
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    ));
+    vi.stubGlobal('fetch', fetchSpy);
+
+    await syncNews();
+
+    const [url, init] = fetchSpy.mock.calls[0];
+    expect(String(url)).toBe('http://127.0.0.1:8080/api/admin/news/sync');
+    expect(init?.method).toBe('POST');
+  });
 });

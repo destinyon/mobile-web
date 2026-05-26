@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Eye, Trash2 } from 'lucide-vue-next';
 import type { NewsSummary } from '../types/api';
 
 defineProps<{
@@ -20,13 +21,14 @@ function formatDate(value: string): string {
 </script>
 
 <template>
-  <section class="news-table-panel">
-    <table class="news-table">
+  <section class="table-panel news-table-panel">
+    <table class="admin-table news-table">
       <thead>
         <tr>
-          <th>新闻标题</th>
+          <th>文章</th>
           <th>分类</th>
           <th>作者</th>
+          <th>浏览</th>
           <th>互动</th>
           <th>更新时间</th>
           <th>操作</th>
@@ -34,32 +36,38 @@ function formatDate(value: string): string {
       </thead>
       <tbody>
         <tr v-if="loading">
-          <td colspan="6" class="table-state">正在加载真实后端新闻...</td>
+          <td colspan="7" class="table-state">加载中</td>
         </tr>
         <tr v-else-if="items.length === 0">
-          <td colspan="6" class="table-state">暂无可展示新闻</td>
+          <td colspan="7" class="table-state">暂无文章</td>
         </tr>
         <tr v-for="item in items" v-else :key="item.id">
           <td class="title-cell">
             <img v-if="item.coverUrl" :src="item.coverUrl" alt="" />
             <div>
               <strong>{{ item.title }}</strong>
-              <p>{{ item.summary || '暂无摘要' }}</p>
+              <span>ID {{ item.id }}</span>
             </div>
           </td>
-          <td>{{ item.categoryName || '-' }}</td>
+          <td><span class="category-pill">{{ item.categoryName || '未分类' }}</span></td>
           <td>{{ item.author || '-' }}</td>
+          <td>{{ item.viewCount }}</td>
           <td>
             <div class="count-stack">
-              <span>浏览 {{ item.viewCount }}</span>
-              <span>赞 {{ item.likeCount }} / 藏 {{ item.favoriteCount }} / 评 {{ item.commentCount }}</span>
+              <span>赞 {{ item.likeCount }}</span>
+              <span>藏 {{ item.favoriteCount }}</span>
+              <span>评 {{ item.commentCount }}</span>
             </div>
           </td>
           <td>{{ formatDate(item.updatedAt) }}</td>
           <td>
             <div class="row-actions">
-              <button type="button" class="ghost-button" @click="$emit('view', item)">查看</button>
-              <button type="button" class="danger-button" @click="$emit('delete', item)">删除</button>
+              <button type="button" class="icon-action" title="查看详情" @click="$emit('view', item)">
+                <Eye :size="16" />
+              </button>
+              <button type="button" class="icon-action danger" title="下架文章" @click="$emit('delete', item)">
+                <Trash2 :size="16" />
+              </button>
             </div>
           </td>
         </tr>

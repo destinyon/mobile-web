@@ -17,8 +17,7 @@ INSERT INTO topics (id, name, description, sort_no, status)
 VALUES
 (1, '赛事讨论', '围绕比赛、赛程和球员表现的投稿', 1, 'ACTIVE'),
 (2, '社区交流', '球友心得、训练记录和约球交流', 2, 'ACTIVE'),
-(3, '羽球装备', '球拍、球线、球鞋和穿搭建议', 3, 'ACTIVE'),
-(4, '旧话题', '旧链路停用', 99, 'OFFLINE')
+(3, '羽球装备', '球拍、球线、球鞋和穿搭建议', 3, 'ACTIVE')
 ON DUPLICATE KEY UPDATE name = VALUES(name), description = VALUES(description), sort_no = VALUES(sort_no), status = VALUES(status);
 
 INSERT INTO banners (id, title, image_url, link_type, link_target, sort_no, status)

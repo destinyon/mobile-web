@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { ArrowRight, ShieldCheck } from 'lucide-vue-next';
 import { adminLogin } from '../api/auth';
 
 const props = defineProps<{
@@ -39,14 +40,30 @@ async function submit(): Promise<void> {
 <template>
   <main class="login-page">
     <section class="login-visual">
-      <span class="brand-mark">羽</span>
-      <p class="eyebrow">web-admin</p>
-      <h1>羽球在线管理端</h1>
-      <p>使用唯一管理员账号登录后台，登录成功后由后端签发管理员 Token。当前版本只提供新闻查看与删除/下架能力。</p>
+      <div class="login-brand">
+        <span class="brand-mark">羽</span>
+        <div>
+          <p class="eyebrow">badminton operations</p>
+          <h1>羽球在线管理台</h1>
+        </div>
+      </div>
+      <div class="court-lines" aria-hidden="true">
+        <i></i>
+        <i></i>
+        <i></i>
+      </div>
+      <div class="login-stats">
+        <span>News</span>
+        <span>Users</span>
+        <span>Moderation</span>
+      </div>
     </section>
 
     <form class="login-card" @submit.prevent="submit">
-      <h2>管理员登录</h2>
+      <div class="login-card-heading">
+        <ShieldCheck :size="22" />
+        <h2>管理员登录</h2>
+      </div>
       <label for="admin-username">账号</label>
       <input
         id="admin-username"
@@ -66,10 +83,10 @@ async function submit(): Promise<void> {
         required
       />
       <p v-if="error" class="form-error">{{ error }}</p>
-      <button type="submit" class="primary-button" :disabled="submitting">
-        {{ submitting ? '登录中...' : '进入管理台' }}
+      <button type="submit" class="primary-button login-submit" :disabled="submitting">
+        <span>{{ submitting ? '登录中' : '进入管理台' }}</span>
+        <ArrowRight :size="18" />
       </button>
-      <p class="form-hint">前端不注册管理员账号；若后端返回 401/403，会清除本地登录状态。</p>
     </form>
   </main>
 </template>

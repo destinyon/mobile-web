@@ -10,7 +10,7 @@ spring:
     password: ${DB_PASSWORD:123456}
   sql:
     init:
-      mode: always
+      mode: ${SQL_INIT_MODE:always}
       encoding: UTF-8
 
 server:

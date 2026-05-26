@@ -1,45 +1,139 @@
 .login-page {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 1fr 420px;
+  grid-template-columns: 1fr 430px;
+  gap: 36px;
+  padding: 48px;
   background:
-    linear-gradient(135deg, rgba(15, 141, 114, .14), transparent 34%),
-    linear-gradient(320deg, rgba(201, 242, 109, .22), transparent 30%),
-    #eef3f3;
+    linear-gradient(90deg, rgba(7, 23, 19, .78) 0%, rgba(9, 32, 27, .56) 46%, rgba(237, 242, 238, .90) 70%, #edf2ee 100%),
+    url('../assets/badminton-login-bg.png') center / cover no-repeat,
+    #102b25;
 }
 
 .login-visual {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 64px 92px;
+  position: relative;
+  min-height: 620px;
+  padding: 42px;
+  overflow: hidden;
+  color: #fff;
 }
 
-.login-visual h1 {
-  margin: 10px 0 12px;
-  font-size: 44px;
+.login-visual::after {
+  content: "";
+  position: absolute;
+  inset: 8% 8% 10% 5%;
+  border: 1px solid rgba(233, 247, 238, .14);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+.login-brand {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.login-brand h1 {
+  margin: 4px 0 0;
+  font-size: 46px;
+  line-height: 1.05;
   letter-spacing: 0;
 }
 
-.login-visual p:last-child {
-  max-width: 520px;
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.8;
+.court-lines {
+  position: absolute;
+  inset: 132px 52px 88px 24px;
+  border: 2px solid rgba(216, 245, 220, .52);
+  border-radius: 6px;
+  transform: skewX(-9deg) rotate(-4deg);
+  opacity: .42;
+}
+
+.court-lines::before,
+.court-lines::after,
+.court-lines i {
+  content: "";
+  position: absolute;
+  background: rgba(216, 245, 220, .44);
+}
+
+.court-lines::before {
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.court-lines::after {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+}
+
+.court-lines i:nth-child(1) {
+  top: 0;
+  bottom: 0;
+  left: 25%;
+  width: 1px;
+}
+
+.court-lines i:nth-child(2) {
+  top: 0;
+  bottom: 0;
+  right: 25%;
+  width: 1px;
+}
+
+.court-lines i:nth-child(3) {
+  left: 0;
+  right: 0;
+  bottom: 22%;
+  height: 1px;
+}
+
+.login-stats {
+  position: absolute;
+  left: 42px;
+  bottom: 44px;
+  display: flex;
+  gap: 10px;
+}
+
+.login-stats span {
+  min-height: 34px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, .24);
+  border-radius: 999px;
+  background: rgba(12, 33, 29, .42);
+  color: #e9f7ee;
+  font-size: 12px;
+  font-weight: 800;
+  backdrop-filter: blur(10px);
 }
 
 .login-card {
   align-self: center;
-  margin-right: 64px;
-  padding: 28px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, .92);
-  box-shadow: 0 22px 70px rgba(32, 47, 59, .16);
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, .82);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .88);
+  box-shadow: 0 26px 70px rgba(12, 31, 27, .25);
+  backdrop-filter: blur(14px);
 }
 
-.login-card h2 {
-  margin: 0 0 20px;
+.login-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.login-card-heading h2 {
+  margin: 0;
+  font-size: 24px;
 }
 
 .login-card label {
@@ -47,15 +141,15 @@
   margin-bottom: 8px;
   font-size: 13px;
   font-weight: 800;
-  color: #40505c;
+  color: #40504a;
 }
 
 .login-card input {
   width: 100%;
-  padding: 12px;
+  padding: 12px 13px;
   margin-bottom: 16px;
-  border: 1px solid #cdd9de;
-  border-radius: 7px;
+  border: 1px solid #ccd9d2;
+  border-radius: 8px;
   background: #fff;
   color: var(--ink);
   line-height: 1.6;
@@ -64,26 +158,19 @@
 
 .login-card input:focus {
   border-color: var(--court);
-  box-shadow: 0 0 0 3px rgba(15, 141, 114, .12);
+  box-shadow: 0 0 0 4px rgba(19, 121, 91, .12);
 }
 
-.login-card .primary-button {
+.login-submit {
   width: 100%;
-  justify-content: center;
+  margin-top: 4px;
 }
 
 .form-error {
-  padding: 10px;
-  margin: 12px 0;
-  border: 1px solid #f0beb8;
-  border-radius: 7px;
-  background: #fff1ef;
-  color: #ad352e;
-}
-
-.form-hint {
-  margin: 12px 0 0;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.6;
+  padding: 10px 12px;
+  margin: 4px 0 14px;
+  border: 1px solid #efc2bc;
+  border-radius: 8px;
+  background: #fff2ef;
+  color: #a93a2f;
 }

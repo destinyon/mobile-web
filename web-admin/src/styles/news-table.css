@@ -1,39 +1,40 @@
-.news-table-panel {
+.table-panel {
   border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fff;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .96);
   overflow: hidden;
-  box-shadow: 0 16px 42px rgba(28, 48, 60, .08);
+  box-shadow: var(--shadow);
 }
 
-.news-table {
+.admin-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
 }
 
-.news-table th,
-.news-table td {
+.admin-table th,
+.admin-table td {
   padding: 12px;
-  border-bottom: 1px solid #edf2f3;
+  border-bottom: 1px solid #edf3ef;
   text-align: left;
   vertical-align: middle;
   font-size: 13px;
 }
 
-.news-table th {
-  background: #f7faf9;
-  color: #60707a;
+.admin-table th {
+  background: #f6faf7;
+  color: #60706a;
   font-size: 12px;
   font-weight: 900;
 }
 
-.news-table th:nth-child(1) { width: 42%; }
-.news-table th:nth-child(2) { width: 10%; }
+.news-table th:nth-child(1) { width: 34%; }
+.news-table th:nth-child(2) { width: 11%; }
 .news-table th:nth-child(3) { width: 10%; }
-.news-table th:nth-child(4) { width: 17%; }
-.news-table th:nth-child(5) { width: 11%; }
-.news-table th:nth-child(6) { width: 10%; }
+.news-table th:nth-child(4) { width: 8%; }
+.news-table th:nth-child(5) { width: 15%; }
+.news-table th:nth-child(6) { width: 13%; }
+.news-table th:nth-child(7) { width: 9%; }
 
 .title-cell {
   display: flex;
@@ -43,32 +44,59 @@
 }
 
 .title-cell img {
-  width: 58px;
-  height: 42px;
+  width: 62px;
+  height: 44px;
   flex: 0 0 auto;
-  border-radius: 6px;
+  border-radius: 7px;
   object-fit: cover;
   background: #e7eeee;
 }
 
 .title-cell strong,
-.title-cell p {
+.title-cell span {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.title-cell p {
-  margin: 5px 0 0;
+.title-cell span {
+  margin-top: 4px;
   color: var(--muted);
+  font-size: 12px;
+}
+
+.category-pill,
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #e7f4ec;
+  color: #13795b;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.status-pill.neutral {
+  background: #eef2f4;
+  color: #52616a;
 }
 
 .count-stack {
-  display: grid;
-  gap: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
   color: #52616d;
   font-size: 12px;
+}
+
+.count-stack span {
+  min-height: 24px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: #f0f5f2;
 }
 
 .row-actions {
@@ -76,10 +104,14 @@
   gap: 7px;
 }
 
-.row-actions button {
-  min-height: 30px;
-  padding: 0 9px;
-  font-size: 12px;
+.icon-action {
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  border: 1px solid #d3ded8;
+  background: #fff;
+  color: #253630;
 }
 
 .table-state {
@@ -92,13 +124,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 12px;
   padding: 12px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 10px;
   background: #fff;
-  color: #51606b;
+  color: #51605a;
   font-size: 13px;
+  box-shadow: var(--shadow);
 }
 
 .pager-actions {
@@ -107,8 +139,59 @@
 }
 
 .pager-actions button {
-  min-height: 32px;
-  border: 1px solid #cdd9de;
-  border-radius: 7px;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #cbd8d1;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
   background: #fff;
+  color: var(--ink);
+}
+
+.user-table th:nth-child(1) { width: 28%; }
+.user-table th:nth-child(2) { width: 12%; }
+.user-table th:nth-child(3) { width: 12%; }
+.user-table th:nth-child(4) { width: 12%; }
+.user-table th:nth-child(5) { width: 16%; }
+.user-table th:nth-child(6) { width: 17%; }
+.user-table th:nth-child(7) { width: 7%; }
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.user-cell img,
+.user-cell > span {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border-radius: 10px;
+}
+
+.user-cell img {
+  object-fit: cover;
+}
+
+.user-cell > span {
+  display: grid;
+  place-items: center;
+  background: #dff7df;
+  color: var(--court-strong);
+  font-weight: 900;
+}
+
+.user-cell strong,
+.user-cell small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-cell small {
+  color: var(--muted);
 }

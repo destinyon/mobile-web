@@ -129,6 +129,14 @@ class NeteaseNewsSyncServiceTest {
     }
 
     @Test
+    void manualSyncCanLimitFetchedPages() {
+        NeteaseNewsSyncResult result = syncService.syncLatest(1);
+
+        assertThat(result.pages()).isEqualTo(1);
+        assertThat(result.fetched()).isEqualTo(3);
+    }
+
+    @Test
     void syncSkipsDuplicateKeyRaceWithoutFailing() {
         jdbcTemplate.update("""
                 INSERT INTO news(category_id, user_id, title, cover_url, summary, author, content,

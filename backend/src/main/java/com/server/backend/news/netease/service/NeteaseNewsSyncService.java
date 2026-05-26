@@ -35,11 +35,15 @@ public class NeteaseNewsSyncService {
     }
 
     public NeteaseNewsSyncResult syncLatest() {
+        return syncLatest(properties.getPages());
+    }
+
+    public NeteaseNewsSyncResult syncLatest(int requestedPages) {
         cleanExistingNeteaseContent();
         int fetched = 0;
         int inserted = 0;
         int skipped = 0;
-        int pages = Math.max(1, Math.min(10, properties.getPages()));
+        int pages = Math.max(1, Math.min(10, requestedPages));
         Set<String> imported = new HashSet<>();
         LocalDateTime latestImportedAt = latestImportedAt();
         for (int page = 1; page <= pages; page++) {

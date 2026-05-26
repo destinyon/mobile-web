@@ -43,6 +43,76 @@ export interface NewsSummary {
   updatedAt: string;
 }
 
+export interface CategoryItem {
+  id: number;
+  name: string;
+  sortNo: number;
+}
+
+export interface AdminCategoryStat {
+  categoryId: number;
+  categoryName: string;
+  newsCount: number;
+  totalViews: number;
+  totalLikes: number;
+  totalFavorites: number;
+}
+
+export interface AdminSummary {
+  userCount: number;
+  activeUserCount: number;
+  newsCount: number;
+  publishedNewsCount: number;
+  offlineNewsCount: number;
+  postCount: number;
+  commentCount: number;
+  totalViews: number;
+  totalLikes: number;
+  totalFavorites: number;
+  categoryStats: AdminCategoryStat[];
+}
+
+export interface AdminNewsRankingItem {
+  id: number;
+  title: string;
+  categoryName: string;
+  coverUrl: string;
+  viewCount: number;
+  likeCount: number;
+  favoriteCount: number;
+  commentCount: number;
+  heatScore: number;
+}
+
+export interface AdminUserItem {
+  id: number;
+  nickname: string;
+  avatarUrl: string;
+  phone: string | null;
+  role: string;
+  status: string;
+  postCount: number;
+  commentCount: number;
+  favoriteCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminUserDetail extends AdminUserItem {
+  age: number | null;
+  playYears: number | null;
+  gender: string | null;
+  likeCount: number;
+  browseCount: number;
+}
+
+export interface NewsSyncResult {
+  pages: number;
+  fetched: number;
+  inserted: number;
+  skipped: number;
+}
+
 export interface CommentNode {
   id: number;
   targetType: string;

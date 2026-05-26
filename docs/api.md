@@ -98,6 +98,27 @@
 
 上传和删除均需要登录。删除只接受 OSS object key，不接受完整 URL。
 
+## 后台管理
+
+以下接口都需要 `Authorization: Bearer <token>`，且当前用户角色必须为 `ADMIN`。
+
+- `GET /api/admin/summary`
+  - 返回用户数、文章数、帖子数、评论数、浏览/点赞/收藏汇总，以及各分类文章和互动统计。
+- `GET /api/admin/news?keyword=&categoryId=&page=1&pageSize=20`
+  - 返回 `news` 表全量分页数据，包括已发布和已下架文章；`keyword` 匹配标题、摘要、作者，`categoryId` 按分类过滤。
+- `GET /api/admin/news/{id}`
+  - 返回后台只读文章详情，不增加浏览量，也不受前台发布状态过滤影响。
+- `GET /api/admin/news/rankings?limit=10`
+  - 返回点赞数加收藏数的文章热度排行，默认 Top 10。
+- `PUT /api/admin/news/{id}/status?status=OFFLINE`
+  - 更新文章状态，并写入 `admin_logs`。
+- `POST /api/admin/news/sync?pages=1`
+  - 手动触发网易羽毛球新闻增量同步，`pages` 限制为 1 到 10。
+- `GET /api/admin/users?keyword=&page=1&pageSize=20`
+  - 返回用户分页列表和发帖、评论、收藏统计。
+- `GET /api/admin/users/{id}`
+  - 返回用户资料详情和发帖、评论、收藏、点赞、浏览记录统计。
+
 ## 权限
 
 - 首页、资讯列表/详情、投稿列表/详情公开可读。

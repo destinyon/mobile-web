@@ -34,6 +34,29 @@ function asPostItem(item) {
   };
 }
 
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function withHighlight(items, keyword) {
+  const trimmed = keyword.trim();
+  if (!trimmed) return items;
+  const pattern = new RegExp(escapeRegExp(trimmed), 'ig');
+  return items.map((item) => ({
+    ...item,
+    highlightedTitle: escapeHtml(item.title).replace(pattern, (match) => `<span style="color:#d92d20;">${match}</span>`)
+  }));
+}
+
 Page({
   data: {
     keyword: '',
@@ -88,8 +111,9 @@ Page({
 
   onSearch() {
     const filter = this.data.filters.find((item) => item.type === this.data.activeFilter) || this.data.filters[0];
+    const keyword = this.data.keyword.trim();
     const params = {
-      keyword: this.data.keyword.trim() || undefined,
+      keyword: keyword || undefined,
       page: 1,
       pageSize: 30,
       sort: 'latest'
@@ -105,7 +129,7 @@ Page({
           .sort((left, right) => right.sortTime - left.sortTime));
 
     request
-      .then((items) => this.setData({ items }))
+      .then((items) => this.setData({ items: withHighlight(items, keyword) }))
       .catch((error) => this.setData({ error: error.msg || '搜索失败' }))
       .finally(() => this.setData({ loading: false }));
   }

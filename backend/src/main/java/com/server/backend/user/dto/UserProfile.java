@@ -5,6 +5,7 @@ public record UserProfile(
         String nickname,
         String avatarUrl,
         String phone,
+        String email,
         Integer age,
         Integer playYears,
         String gender,

@@ -16,6 +16,7 @@ export interface UserProfile {
   nickname: string;
   avatarUrl: string;
   phone: string | null;
+  email: string | null;
   age: number | null;
   playYears: number | null;
   gender: string | null;
@@ -53,6 +54,8 @@ export interface AdminCategoryStat {
   categoryId: number;
   categoryName: string;
   newsCount: number;
+  postCount: number;
+  contentCount: number;
   totalViews: number;
   totalLikes: number;
   totalFavorites: number;
@@ -73,6 +76,7 @@ export interface AdminSummary {
 }
 
 export interface AdminNewsRankingItem {
+  targetType: 'NEWS' | 'POST';
   id: number;
   title: string;
   categoryName: string;
@@ -89,6 +93,7 @@ export interface AdminUserItem {
   nickname: string;
   avatarUrl: string;
   phone: string | null;
+  email: string | null;
   role: string;
   status: string;
   postCount: number;
@@ -127,9 +132,35 @@ export interface CommentNode {
 }
 
 export interface NewsDetail extends NewsSummary {
+  targetType?: 'NEWS';
   content: string;
   mediaUrl: string | null;
   mediaType: string;
   liked: boolean;
   comments: CommentNode[];
 }
+
+export interface PostDetail {
+  targetType?: 'POST';
+  id: number;
+  topicId: number;
+  topicName: string;
+  userId: number;
+  nickname: string;
+  avatarUrl: string;
+  title: string;
+  coverUrl: string;
+  content: string;
+  images: string[];
+  viewCount: number;
+  likeCount: number;
+  favoriteCount: number;
+  commentCount: number;
+  liked: boolean;
+  favorited: boolean;
+  status: string;
+  updatedAt: string;
+  comments: CommentNode[];
+}
+
+export type AdminContentDetail = NewsDetail | PostDetail;

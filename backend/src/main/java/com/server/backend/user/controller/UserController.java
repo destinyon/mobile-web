@@ -3,9 +3,9 @@ package com.server.backend.user.controller;
 import com.server.backend.auth.service.AuthService;
 import com.server.backend.comment.dto.UserCommentItem;
 import com.server.backend.common.ApiResponse;
-import com.server.backend.news.dto.NewsSummary;
 import com.server.backend.post.dto.PostSummary;
 import com.server.backend.user.dto.BrowseHistoryItem;
+import com.server.backend.user.dto.FavoriteItem;
 import com.server.backend.user.dto.UpdateProfileRequest;
 import com.server.backend.user.dto.UserProfile;
 import com.server.backend.user.service.UserService;
@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/favorites")
-    public ApiResponse<List<NewsSummary>> favorites(@RequestHeader("Authorization") String authorization) {
+    public ApiResponse<List<FavoriteItem>> favorites(@RequestHeader("Authorization") String authorization) {
         return ApiResponse.ok(userService.favorites(authService.requireUser(authorization).id()));
     }
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import type { AdminSummary } from '../types/api';
+import type { AdminCategoryStat, AdminSummary } from '../types/api';
 
 const props = defineProps<{
   summary: AdminSummary | null;
@@ -8,109 +8,140 @@ const props = defineProps<{
 }>();
 
 const categoryStats = computed(() => props.summary?.categoryStats ?? []);
-const totalCategoryNews = computed(() => categoryStats.value.reduce((sum, stat) => sum + stat.newsCount, 0));
-const categoryGradient = computed(() => {
-  if (totalCategoryNews.value <= 0) {
-    return '#d9e4df 0 100%';
+const topCategories = computed(() => [...categoryStats.value]
+  .sort((left, right) => right.contentCount - left.contentCount)
+  .slice(0, 3));
+const totalNews = computed(() => props.summary?.newsCount ?? sumBy(categoryStats.value, 'newsCount'));
+const totalPosts = computed(() => props.summary?.postCount ?? sumBy(categoryStats.value, 'postCount'));
+const totalContent = computed(() => totalNews.value + totalPosts.value);
+const totalEngagement = computed(() =>
+  (props.summary?.totalLikes ?? 0) + (props.summary?.totalFavorites ?? 0) + (props.summary?.commentCount ?? 0)
+);
+const maxContent = computed(() => maxValue(topCategories.value.map((stat) => stat.contentCount)));
+const maxHeat = computed(() => maxValue(topCategories.value.map((stat) => heatValue(stat))));
+const contentGradient = computed(() => {
+  if (totalContent.value <= 0) {
+    return '#dde7e1 0 100%';
   }
-  const colors = ['#13795b', '#c8f24e', '#f3b343', '#6b9fd8', '#9f7aea'];
-  let start = 0;
-  return categoryStats.value
-    .map((stat, index) => {
-      const span = stat.newsCount / totalCategoryNews.value * 100;
-      const end = start + span;
-      const segment = `${colors[index % colors.length]} ${start}% ${end}%`;
-      start = end;
-      return segment;
-    })
-    .join(', ');
+  const newsEnd = percent(totalNews.value, totalContent.value);
+  return `#11684f 0 ${newsEnd}%, #f2b84b ${newsEnd}% 100%`;
 });
 
 function maxValue(values: number[]): number {
   return Math.max(1, ...values);
 }
 
-function heatValue(stat: { totalLikes: number; totalFavorites: number }): number {
-  return stat.totalLikes + stat.totalFavorites;
+function sumBy(stats: AdminCategoryStat[], key: keyof Pick<AdminCategoryStat, 'newsCount' | 'postCount'>): number {
+  return stats.reduce((sum, stat) => sum + stat[key], 0);
+}
+
+function heatValue(stat: AdminCategoryStat): number {
+  return stat.totalLikes + stat.totalFavorites + stat.totalViews;
+}
+
+function percent(value: number, total: number): number {
+  if (total <= 0) {
+    return 0;
+  }
+  return Math.max(0, Math.min(100, value / total * 100));
+}
+
+function categoryPercent(stat: AdminCategoryStat): number {
+  return percent(stat.contentCount, maxContent.value);
+}
+
+function formatPercent(value: number, total: number): string {
+  return `${Math.round(percent(value, total))}%`;
 }
 </script>
 
 <template>
-  <section class="overview-grid expanded">
-    <article class="chart-panel category-panel">
+  <section class="overview-dashboard">
+    <article class="chart-panel overview-hero-panel">
       <div class="panel-heading">
         <div>
-          <p class="eyebrow">分类分布</p>
-          <h2>文章与互动</h2>
+          <p class="eyebrow">内容结构</p>
+          <h2>新闻与帖子总览</h2>
         </div>
       </div>
       <div v-if="loading" class="panel-state">加载中</div>
-      <div v-else-if="categoryStats.length === 0" class="panel-state">暂无分类数据</div>
-      <div v-else class="bar-chart">
-        <div
-          v-for="stat in categoryStats"
-          :key="stat.categoryId"
-          class="bar-row"
-        >
-          <span class="bar-label">{{ stat.categoryName }}</span>
-          <div class="bar-track">
-            <i :style="{ width: `${Math.max(7, stat.newsCount / maxValue(categoryStats.map(item => item.newsCount)) * 100)}%` }"></i>
+      <div v-else class="content-mix-layout">
+        <div class="content-donut" :style="{ '--content-gradient': contentGradient }">
+          <span>{{ totalContent }} 篇</span>
+        </div>
+        <div class="content-mix-copy">
+          <div class="mix-total">
+            <strong>{{ totalEngagement }}</strong>
+            <span>赞藏评互动</span>
           </div>
-          <strong>{{ stat.newsCount }}</strong>
+          <div class="mix-legend">
+            <div class="legend-row">
+              <span><i class="news-dot"></i>新闻</span>
+              <strong>{{ totalNews }} 篇</strong>
+              <small>{{ formatPercent(totalNews, totalContent) }}</small>
+            </div>
+            <div class="legend-row">
+              <span><i class="post-dot"></i>帖子</span>
+              <strong>{{ totalPosts }} 篇</strong>
+              <small>{{ formatPercent(totalPosts, totalContent) }}</small>
+            </div>
+          </div>
         </div>
       </div>
     </article>
 
-    <article class="chart-panel interaction-panel">
+    <article class="chart-panel category-split-panel">
       <div class="panel-heading">
         <div>
-          <p class="eyebrow">互动结构</p>
-          <h2>分类热度</h2>
+          <p class="eyebrow">三类统计</p>
+          <h2>分类新闻/帖子分布</h2>
         </div>
       </div>
       <div v-if="loading" class="panel-state">加载中</div>
-      <div v-else-if="categoryStats.length === 0" class="panel-state">暂无分类数据</div>
+      <div v-else-if="topCategories.length === 0" class="panel-state">暂无分类数据</div>
+      <div v-else class="category-card-grid">
+        <div
+          v-for="(stat, index) in topCategories"
+          :key="stat.categoryId"
+          class="category-data-card"
+          :class="`category-tone-${index}`"
+        >
+          <div class="category-card-head">
+            <span>{{ stat.categoryName }}</span>
+            <strong>{{ stat.contentCount }}</strong>
+          </div>
+          <div class="category-progress" :style="{ '--category-size': `${categoryPercent(stat)}%` }">
+            <i class="news-segment" :style="{ width: formatPercent(stat.newsCount, stat.contentCount) }"></i>
+            <i class="post-segment" :style="{ width: formatPercent(stat.postCount, stat.contentCount) }"></i>
+          </div>
+          <div class="category-card-meta">
+            <span>新闻 {{ stat.newsCount }}</span>
+            <span>帖子 {{ stat.postCount }}</span>
+            <span>浏览 {{ stat.totalViews }}</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="chart-panel engagement-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">互动热力</p>
+          <h2>三类分类热度</h2>
+        </div>
+      </div>
+      <div v-if="loading" class="panel-state">加载中</div>
+      <div v-else-if="topCategories.length === 0" class="panel-state">暂无互动数据</div>
       <div v-else class="heat-chart">
         <div
-          v-for="stat in categoryStats"
+          v-for="stat in topCategories"
           :key="stat.categoryId"
           class="heat-cell"
-          :style="{
-            '--heat': `${Math.max(8, heatValue(stat) / maxValue(categoryStats.map(item => heatValue(item))) * 100)}%`
-          }"
+          :style="{ '--heat': `${Math.max(10, percent(heatValue(stat), maxHeat))}%` }"
         >
           <span>{{ stat.categoryName }}</span>
           <strong>{{ heatValue(stat) }}</strong>
-          <small>赞藏合计</small>
-        </div>
-      </div>
-    </article>
-
-    <article class="chart-panel mix-panel">
-      <div class="panel-heading">
-        <div>
-          <p class="eyebrow">讨论分类</p>
-          <h2>分类占比</h2>
-        </div>
-      </div>
-      <div v-if="loading" class="panel-state">加载中</div>
-      <div v-else-if="categoryStats.length === 0" class="panel-state">暂无分类数据</div>
-      <div v-else class="donut-wrap">
-        <div
-          class="donut"
-          :style="{
-            '--category-gradient': categoryGradient
-          }"
-        >
-          <span>{{ totalCategoryNews }} 篇</span>
-        </div>
-        <div class="legend-list">
-          <span
-            v-for="(stat, index) in categoryStats"
-            :key="stat.categoryId"
-          >
-            <i :class="`legend-category-${index % 5}`"></i>{{ stat.categoryName }} {{ stat.newsCount }} 篇
-          </span>
+          <small>浏览/赞/藏合计</small>
         </div>
       </div>
     </article>

@@ -7,11 +7,14 @@ import com.server.backend.news.dto.NewsSummary;
 import com.server.backend.post.dto.PostSummary;
 import com.server.backend.post.service.PostService;
 import com.server.backend.user.dto.BrowseHistoryItem;
+import com.server.backend.user.dto.FavoriteItem;
 import com.server.backend.user.dto.UpdateProfileRequest;
 import com.server.backend.user.dto.UserProfile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -37,13 +40,14 @@ public class UserService {
 
     public UserProfile profile(long userId) {
         return jdbcTemplate.queryForObject("""
-                SELECT id, nickname, avatar_url, phone, age, play_years, gender, role
+                SELECT id, nickname, avatar_url, phone, email, age, play_years, gender, role
                 FROM users WHERE id = ?
                 """, (rs, rowNum) -> new UserProfile(
                 rs.getLong("id"),
                 rs.getString("nickname"),
                 rs.getString("avatar_url"),
                 rs.getString("phone"),
+                rs.getString("email"),
                 rs.getObject("age", Integer.class),
                 rs.getObject("play_years", Integer.class),
                 rs.getString("gender"),
@@ -68,8 +72,12 @@ public class UserService {
         return profile(userId);
     }
 
-    public List<NewsSummary> favorites(long userId) {
-        return newsService.favorites(userId);
+    public List<FavoriteItem> favorites(long userId) {
+        List<FavoriteItem> items = new ArrayList<>();
+        items.addAll(newsService.favorites(userId).stream().map(this::favoriteNews).toList());
+        items.addAll(postService.favorites(userId).stream().map(this::favoritePost).toList());
+        items.sort(Comparator.comparing(FavoriteItem::updatedAt).reversed());
+        return items;
     }
 
     public List<UserCommentItem> comments(long userId) {
@@ -86,5 +94,49 @@ public class UserService {
 
     private String pick(String next, String current) {
         return next == null || next.isBlank() ? current : next.trim();
+    }
+
+    private FavoriteItem favoriteNews(NewsSummary item) {
+        return new FavoriteItem(
+                item.id(),
+                "NEWS",
+                item.categoryName(),
+                null,
+                item.title(),
+                item.coverUrl(),
+                item.summary(),
+                null,
+                List.of(),
+                item.author(),
+                null,
+                item.viewCount(),
+                item.likeCount(),
+                item.favoriteCount(),
+                item.commentCount(),
+                item.favorited(),
+                item.updatedAt()
+        );
+    }
+
+    private FavoriteItem favoritePost(PostSummary item) {
+        return new FavoriteItem(
+                item.id(),
+                "POST",
+                null,
+                item.topicName(),
+                item.title(),
+                item.coverUrl(),
+                null,
+                item.content(),
+                item.images(),
+                null,
+                item.nickname(),
+                item.viewCount(),
+                item.likeCount(),
+                item.favoriteCount(),
+                item.commentCount(),
+                item.favorited(),
+                item.updatedAt()
+        );
     }
 }

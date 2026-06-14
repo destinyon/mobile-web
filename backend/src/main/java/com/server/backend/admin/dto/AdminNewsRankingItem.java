@@ -1,6 +1,7 @@
 package com.server.backend.admin.dto;
 
 public record AdminNewsRankingItem(
+        String targetType,
         long id,
         String title,
         String categoryName,

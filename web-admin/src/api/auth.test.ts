@@ -21,6 +21,7 @@ describe('admin auth api', () => {
             nickname: '管理员',
             avatarUrl: '',
             phone: '',
+            email: 'admin@example.test',
             age: null,
             playYears: null,
             gender: '',

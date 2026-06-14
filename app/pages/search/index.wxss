@@ -47,6 +47,7 @@
 
 .search-input {
   flex: 1;
+  min-width: 0;
   min-height: 72rpx;
   padding: 0 18rpx;
   border: 2rpx solid #d6dfcf;
@@ -56,14 +57,22 @@
 }
 
 .search-btn {
-  width: 88rpx;
-  min-height: 60rpx;
+  flex: 0 0 96rpx;
+  width: 96rpx;
+  height: 64rpx;
+  min-height: 0;
+  padding: 0;
   border: 2rpx solid #172117;
   border-radius: 8rpx;
   background: #baf279;
   color: #172117;
   font-size: 24rpx;
   font-weight: 800;
+  line-height: 60rpx;
+}
+
+.search-btn::after {
+  border: 0;
 }
 
 .topic-row {

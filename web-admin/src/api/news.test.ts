@@ -3,6 +3,7 @@ import {
   deleteNews,
   getAdminNewsDetail,
   getAdminNewsRankings,
+  getAdminPostDetail,
   getAdminUserDetail,
   getAdminSummary,
   listAdminNews,
@@ -87,9 +88,33 @@ describe('news API', () => {
           totalViews: 99,
           totalLikes: 11,
           totalFavorites: 12,
-          categoryStats: []
+          categoryStats: [
+            {
+              categoryId: -1,
+              categoryName: '用户帖子',
+              newsCount: 0,
+              postCount: 3,
+              contentCount: 3,
+              totalViews: 10,
+              totalLikes: 5,
+              totalFavorites: 2
+            }
+          ]
         },
-        '/api/admin/news/rankings': [],
+        '/api/admin/news/rankings': [
+          {
+            targetType: 'POST',
+            id: 7,
+            title: '帖子',
+            categoryName: '装备交流',
+            coverUrl: '',
+            viewCount: 10,
+            likeCount: 3,
+            favoriteCount: 2,
+            commentCount: 1,
+            heatScore: 5
+          }
+        ],
         '/api/categories': [],
         '/api/admin/users': { items: [], total: 0, page: 1, pageSize: 20 }
       };
@@ -111,6 +136,43 @@ describe('news API', () => {
     expect(String(fetchSpy.mock.calls[3][0])).toBe('http://127.0.0.1:8080/api/admin/users?page=1&pageSize=20&keyword=why');
   });
 
+  it('requests an admin post detail for ranking previews', async () => {
+    const fetchSpy = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => new Response(
+      JSON.stringify({
+        success: true,
+        data: {
+          id: 7,
+          topicId: 1,
+          topicName: '装备交流',
+          userId: 2,
+          nickname: '用户',
+          avatarUrl: '',
+          title: '帖子',
+          coverUrl: '',
+          content: '<p>post</p>',
+          images: [],
+          viewCount: 1,
+          likeCount: 2,
+          favoriteCount: 3,
+          commentCount: 4,
+          liked: false,
+          favorited: false,
+          status: 'PUBLISHED',
+          updatedAt: '2026-05-26T00:00:00',
+          comments: []
+        },
+        msg: 'ok'
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    ));
+    vi.stubGlobal('fetch', fetchSpy);
+
+    const detail = await getAdminPostDetail(7);
+
+    expect(detail.topicName).toBe('装备交流');
+    expect(String(fetchSpy.mock.calls[0][0])).toBe('http://127.0.0.1:8080/api/admin/posts/7');
+  });
+
   it('requests an admin user detail for profile inspection', async () => {
     const fetchSpy = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => new Response(
       JSON.stringify({
@@ -120,6 +182,7 @@ describe('news API', () => {
           nickname: '管理员',
           avatarUrl: '',
           phone: '18800000000',
+          email: 'admin@example.test',
           age: 30,
           playYears: 10,
           gender: '男',

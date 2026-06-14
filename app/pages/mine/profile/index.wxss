@@ -113,6 +113,11 @@
   color: #172117;
 }
 
+.readonly-field {
+  background: #f4fee9;
+  color: #65705f;
+}
+
 .field-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

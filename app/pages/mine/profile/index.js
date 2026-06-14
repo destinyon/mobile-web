@@ -10,6 +10,7 @@ Page({
     form: {
       nickname: '',
       avatarUrl: '',
+      email: '',
       phone: '',
       age: '',
       playYears: '',
@@ -36,6 +37,7 @@ Page({
         form: {
           nickname: profile.nickname || '',
           avatarUrl: profile.avatarUrl || '',
+          email: profile.email || '',
           phone: profile.phone || '',
           age: profile.age || '',
           playYears: profile.playYears || '',

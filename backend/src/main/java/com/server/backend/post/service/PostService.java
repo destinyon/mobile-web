@@ -243,6 +243,18 @@ public class PostService {
                 """, Rows.postSummary(userId), userId, userId);
     }
 
+    public List<PostSummary> favorites(long userId) {
+        return jdbcTemplate.query("""
+                SELECT p.*, t.name AS topic_name, u.nickname, u.avatar_url, TRUE AS favorited
+                FROM favorites fav
+                JOIN posts p ON p.id = fav.target_id AND fav.target_type = 'POST'
+                LEFT JOIN topics t ON t.id = p.topic_id
+                JOIN users u ON u.id = p.user_id
+                WHERE fav.user_id = ? AND p.status = 'PUBLISHED'
+                ORDER BY fav.created_at DESC
+                """, Rows.postSummary(userId), userId);
+    }
+
     private boolean topicExists(long topicId) {
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM topics WHERE id = ? AND status = 'ACTIVE'", Integer.class, topicId);
         return count != null && count > 0;

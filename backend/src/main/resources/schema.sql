@@ -4,13 +4,26 @@ CREATE TABLE IF NOT EXISTS users (
     nickname VARCHAR(80) NOT NULL,
     avatar_url VARCHAR(512),
     phone VARCHAR(40),
+    email VARCHAR(120),
     age INT,
     play_years INT,
     gender VARCHAR(20),
     role VARCHAR(20) NOT NULL DEFAULT 'USER',
     status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_users_phone (phone),
+    UNIQUE KEY uk_users_email (email)
+);
+
+CREATE TABLE IF NOT EXISTS email_login_codes (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(120) NOT NULL,
+    code_hash VARCHAR(128) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    last_sent_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    verified_at TIMESTAMP NULL,
+    UNIQUE KEY uk_email_login_email (email)
 );
 
 CREATE TABLE IF NOT EXISTS categories (

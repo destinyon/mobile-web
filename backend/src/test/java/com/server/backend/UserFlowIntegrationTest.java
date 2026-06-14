@@ -199,6 +199,12 @@ class UserFlowIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
 
+        mockMvc.perform(get("/api/user/favorites").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data[0].feedType").value("POST"))
+                .andExpect(jsonPath("$.data[0].title").value("周末双打怎么轮转更顺畅？"));
+
         JsonNode rootComment = objectMapper.readTree(mockMvc.perform(post("/api/comments")
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)

@@ -138,7 +138,7 @@ function uploadFile(filePath) {
 }
 
 function deleteUpload(objectKey) {
-  return request({ url: '/api/upload', method: 'DELETE', data: { objectKey }, needAuth: true });
+  return request({ url: `/api/upload?objectKey=${encodeURIComponent(objectKey)}`, method: 'DELETE', needAuth: true });
 }
 
 module.exports = {

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { X } from 'lucide-vue-next';
-import type { NewsDetail } from '../types/api';
+import type { AdminContentDetail, NewsDetail, PostDetail } from '../types/api';
 
 const props = defineProps<{
-  detail: NewsDetail | null;
+  detail: AdminContentDetail | null;
   loading?: boolean;
   error?: string;
 }>();
@@ -19,13 +19,6 @@ function formatDate(value?: string): string {
   }
   return value.replace('T', ' ').slice(0, 16);
 }
-
-const safeContent = computed(() => {
-  if (!props.detail?.content) {
-    return '';
-  }
-  return sanitizeHtml(props.detail.content);
-});
 
 function sanitizeHtml(html: string): string {
   const template = document.createElement('template');
@@ -42,6 +35,21 @@ function sanitizeHtml(html: string): string {
   });
   return template.innerHTML;
 }
+
+function isPost(detail: AdminContentDetail | null): detail is PostDetail {
+  return detail?.targetType === 'POST' || Boolean(detail && 'topicName' in detail);
+}
+
+const safeContent = computed(() => {
+  if (!props.detail?.content) {
+    return '';
+  }
+  return sanitizeHtml(props.detail.content);
+});
+
+const contentKindLabel = computed(() => isPost(props.detail) ? '帖子详情' : '新闻详情');
+const categoryLabel = computed(() => isPost(props.detail) ? props.detail.topicName : (props.detail as NewsDetail | null)?.categoryName);
+const authorLabel = computed(() => isPost(props.detail) ? props.detail.nickname : (props.detail as NewsDetail | null)?.author);
 </script>
 
 <template>
@@ -49,7 +57,7 @@ function sanitizeHtml(html: string): string {
     <aside class="detail-drawer">
       <header>
         <div>
-          <p class="eyebrow">文章详情</p>
+          <p class="eyebrow">{{ contentKindLabel }}</p>
           <h2>{{ detail?.title || '加载中' }}</h2>
         </div>
         <button type="button" class="icon-button" title="关闭" aria-label="关闭详情" @click="$emit('close')">
@@ -61,8 +69,8 @@ function sanitizeHtml(html: string): string {
       <div v-else-if="error" class="drawer-state error-state">{{ error }}</div>
       <article v-else-if="detail" class="detail-content">
         <dl class="detail-meta">
-          <div><dt>分类</dt><dd>{{ detail.categoryName || '-' }}</dd></div>
-          <div><dt>作者</dt><dd>{{ detail.author || '-' }}</dd></div>
+          <div><dt>{{ isPost(detail) ? '话题' : '分类' }}</dt><dd>{{ categoryLabel || '-' }}</dd></div>
+          <div><dt>{{ isPost(detail) ? '发布者' : '作者' }}</dt><dd>{{ authorLabel || '-' }}</dd></div>
           <div><dt>更新时间</dt><dd>{{ formatDate(detail.updatedAt) }}</dd></div>
           <div><dt>互动</dt><dd>浏览 {{ detail.viewCount }} / 赞 {{ detail.likeCount }} / 藏 {{ detail.favoriteCount }} / 评 {{ detail.commentCount }}</dd></div>
         </dl>

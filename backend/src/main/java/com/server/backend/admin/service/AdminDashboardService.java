@@ -10,6 +10,7 @@ import com.server.backend.common.PageResult;
 import com.server.backend.common.Rows;
 import com.server.backend.news.dto.NewsDetail;
 import com.server.backend.news.dto.NewsSummary;
+import com.server.backend.post.dto.PostDetail;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -27,20 +28,53 @@ public class AdminDashboardService {
 
     public AdminSummary summary() {
         List<AdminCategoryStat> categoryStats = jdbcTemplate.query("""
-                SELECT c.id AS category_id, c.name AS category_name,
-                    COUNT(n.id) AS news_count,
-                    COALESCE(SUM(n.view_count), 0) AS total_views,
-                    COALESCE(SUM(n.like_count), 0) AS total_likes,
-                    COALESCE(SUM(n.favorite_count), 0) AS total_favorites
-                FROM categories c
-                LEFT JOIN news n ON n.category_id = c.id
-                WHERE c.status = 'ACTIVE'
-                GROUP BY c.id, c.name, c.sort_no
-                ORDER BY c.sort_no ASC, c.id ASC
+                SELECT MIN(category_id) AS category_id,
+                    category_name,
+                    SUM(news_count) AS news_count,
+                    SUM(post_count) AS post_count,
+                    SUM(content_count) AS content_count,
+                    SUM(total_views) AS total_views,
+                    SUM(total_likes) AS total_likes,
+                    SUM(total_favorites) AS total_favorites,
+                    MIN(sort_group) AS sort_group,
+                    MIN(sort_no) AS sort_no
+                FROM (
+                    SELECT c.id AS category_id, c.name AS category_name,
+                        COUNT(n.id) AS news_count,
+                        0 AS post_count,
+                        COUNT(n.id) AS content_count,
+                        COALESCE(SUM(n.view_count), 0) AS total_views,
+                        COALESCE(SUM(n.like_count), 0) AS total_likes,
+                        COALESCE(SUM(n.favorite_count), 0) AS total_favorites,
+                        0 AS sort_group,
+                        c.sort_no AS sort_no
+                    FROM categories c
+                    LEFT JOIN news n ON n.category_id = c.id
+                    WHERE c.status = 'ACTIVE'
+                    GROUP BY c.id, c.name, c.sort_no
+                    UNION ALL
+                    SELECT -t.id AS category_id, t.name AS category_name,
+                        0 AS news_count,
+                        COUNT(p.id) AS post_count,
+                        COUNT(p.id) AS content_count,
+                        COALESCE(SUM(p.view_count), 0) AS total_views,
+                        COALESCE(SUM(p.like_count), 0) AS total_likes,
+                        COALESCE(SUM(p.favorite_count), 0) AS total_favorites,
+                        1 AS sort_group,
+                        t.sort_no AS sort_no
+                    FROM topics t
+                    LEFT JOIN posts p ON p.topic_id = t.id
+                    WHERE t.status = 'ACTIVE'
+                    GROUP BY t.id, t.name, t.sort_no
+                ) category_totals
+                GROUP BY category_name
+                ORDER BY sort_group ASC, sort_no ASC, category_name ASC
                 """, (rs, rowNum) -> new AdminCategoryStat(
                 rs.getLong("category_id"),
                 rs.getString("category_name"),
                 rs.getLong("news_count"),
+                rs.getLong("post_count"),
+                rs.getLong("content_count"),
                 rs.getLong("total_views"),
                 rs.getLong("total_likes"),
                 rs.getLong("total_favorites")
@@ -53,9 +87,9 @@ public class AdminDashboardService {
                 count("SELECT COUNT(*) FROM news WHERE status <> 'PUBLISHED'"),
                 count("SELECT COUNT(*) FROM posts"),
                 count("SELECT COUNT(*) FROM comments WHERE status = 'PUBLISHED'"),
-                count("SELECT COALESCE(SUM(view_count), 0) FROM news"),
-                count("SELECT COALESCE(SUM(like_count), 0) FROM news"),
-                count("SELECT COALESCE(SUM(favorite_count), 0) FROM news"),
+                count("SELECT COALESCE(SUM(view_count), 0) FROM news") + count("SELECT COALESCE(SUM(view_count), 0) FROM posts"),
+                count("SELECT COALESCE(SUM(like_count), 0) FROM news") + count("SELECT COALESCE(SUM(like_count), 0) FROM posts"),
+                count("SELECT COALESCE(SUM(favorite_count), 0) FROM news") + count("SELECT COALESCE(SUM(favorite_count), 0) FROM posts"),
                 categoryStats
         );
     }
@@ -71,6 +105,22 @@ public class AdminDashboardService {
                 """, Rows.newsDetail(), id);
         if (rows.isEmpty()) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "资讯不存在");
+        }
+        return rows.get(0);
+    }
+
+    public PostDetail postDetail(long id) {
+        List<PostDetail> rows = jdbcTemplate.query("""
+                SELECT p.*, t.name AS topic_name, u.nickname, u.avatar_url,
+                    FALSE AS liked,
+                    FALSE AS favorited
+                FROM posts p
+                LEFT JOIN topics t ON t.id = p.topic_id
+                LEFT JOIN users u ON u.id = p.user_id
+                WHERE p.id = ?
+                """, Rows.postDetail(), id);
+        if (rows.isEmpty()) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "帖子不存在");
         }
         return rows.get(0);
     }
@@ -109,15 +159,26 @@ public class AdminDashboardService {
     public List<AdminNewsRankingItem> newsRankings(int limit) {
         int safeLimit = Math.max(1, Math.min(limit, 50));
         return jdbcTemplate.query("""
-                SELECT n.id, n.title, n.cover_url, c.name AS category_name,
-                    n.view_count, n.like_count, n.favorite_count, n.comment_count,
-                    (n.like_count + n.favorite_count) AS heat_score
-                FROM news n
-                LEFT JOIN categories c ON c.id = n.category_id
-                WHERE n.status = 'PUBLISHED'
-                ORDER BY heat_score DESC, n.view_count DESC, n.updated_at DESC, n.id DESC
+                SELECT *
+                FROM (
+                    SELECT 'NEWS' AS target_type, n.id, n.title, n.cover_url, c.name AS category_name,
+                        n.view_count, n.like_count, n.favorite_count, n.comment_count, n.updated_at,
+                        (n.like_count + n.favorite_count) AS heat_score
+                    FROM news n
+                    LEFT JOIN categories c ON c.id = n.category_id
+                    WHERE n.status = 'PUBLISHED'
+                    UNION ALL
+                    SELECT 'POST' AS target_type, p.id, p.title, p.cover_url, t.name AS category_name,
+                        p.view_count, p.like_count, p.favorite_count, p.comment_count, p.updated_at,
+                        (p.like_count + p.favorite_count) AS heat_score
+                    FROM posts p
+                    LEFT JOIN topics t ON t.id = p.topic_id
+                    WHERE p.status = 'PUBLISHED'
+                ) ranked
+                ORDER BY heat_score DESC, view_count DESC, updated_at DESC, id DESC
                 LIMIT ?
                 """, (rs, rowNum) -> new AdminNewsRankingItem(
+                rs.getString("target_type"),
                 rs.getLong("id"),
                 rs.getString("title"),
                 rs.getString("category_name"),
@@ -136,8 +197,9 @@ public class AdminDashboardService {
         StringBuilder where = new StringBuilder(" WHERE 1 = 1");
         List<Object> args = new ArrayList<>();
         if (keyword != null && !keyword.isBlank()) {
-            where.append(" AND (LOWER(u.nickname) LIKE LOWER(?) OR LOWER(u.phone) LIKE LOWER(?) OR LOWER(u.role) LIKE LOWER(?))");
+            where.append(" AND (LOWER(u.nickname) LIKE LOWER(?) OR LOWER(u.phone) LIKE LOWER(?) OR LOWER(u.email) LIKE LOWER(?) OR LOWER(u.role) LIKE LOWER(?))");
             String like = "%" + keyword.trim() + "%";
+            args.add(like);
             args.add(like);
             args.add(like);
             args.add(like);
@@ -158,6 +220,7 @@ public class AdminDashboardService {
                         rs.getString("nickname"),
                         rs.getString("avatar_url"),
                         rs.getString("phone"),
+                        rs.getString("email"),
                         rs.getString("role"),
                         rs.getString("status"),
                         rs.getInt("post_count"),
@@ -185,6 +248,7 @@ public class AdminDashboardService {
                 rs.getString("nickname"),
                 rs.getString("avatar_url"),
                 rs.getString("phone"),
+                rs.getString("email"),
                 rs.getObject("age", Integer.class),
                 rs.getObject("play_years", Integer.class),
                 rs.getString("gender"),

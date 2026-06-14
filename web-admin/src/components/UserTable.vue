@@ -47,6 +47,7 @@ function formatDate(value: string): string {
               <span v-else>{{ item.nickname.slice(0, 1) }}</span>
               <div>
                 <strong>{{ item.nickname }}</strong>
+                <small>{{ item.email || '未绑定邮箱' }}</small>
                 <small>{{ item.phone || '未填写手机号' }}</small>
               </div>
             </div>

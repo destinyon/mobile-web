@@ -1,4 +1,4 @@
-const baseUrl = 'http://127.0.0.1:8080';
+const baseUrl = 'http://10.27.248.95:8080';
 
 module.exports = {
   baseUrl

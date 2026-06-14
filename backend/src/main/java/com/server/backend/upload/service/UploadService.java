@@ -20,23 +20,29 @@ public class UploadService {
     private final String accessKeyId;
     private final String accessKeySecret;
     private final String publicBaseUrl;
+    private final long maxSizeBytes;
 
     public UploadService(
             @Value("${app.oss.endpoint}") String endpoint,
             @Value("${app.oss.bucket}") String bucket,
             @Value("${app.oss.access-key-id}") String accessKeyId,
             @Value("${app.oss.access-key-secret}") String accessKeySecret,
-            @Value("${app.oss.public-base-url}") String publicBaseUrl) {
+            @Value("${app.oss.public-base-url}") String publicBaseUrl,
+            @Value("${app.upload.max-size-mb:5}") long maxSizeMb) {
         this.endpoint = endpoint;
         this.bucket = bucket;
         this.accessKeyId = accessKeyId;
         this.accessKeySecret = accessKeySecret;
         this.publicBaseUrl = publicBaseUrl;
+        this.maxSizeBytes = maxSizeMb * 1024 * 1024;
     }
 
     public UploadResult upload(MultipartFile file) {
         if (file.isEmpty()) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "上传文件不能为空");
+        }
+        if (file.getSize() > maxSizeBytes) {
+            throw new BusinessException(HttpStatus.PAYLOAD_TOO_LARGE, "文件不能超过 " + (maxSizeBytes / 1024 / 1024) + "MB");
         }
         if (!ALLOWED.contains(file.getContentType())) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "仅支持 jpg、png、webp 图片或 mp4 视频");

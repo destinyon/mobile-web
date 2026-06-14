@@ -1,5 +1,6 @@
 Component({
   data: {
+    hidden: false,
     selected: 0,
     list: [
       { pagePath: '/pages/home/index', text: '首页', icon: '⌂', activeIcon: '⌂' },

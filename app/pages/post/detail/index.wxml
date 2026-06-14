@@ -12,15 +12,13 @@
       <view class="topic">{{detail.topicName || '球友投稿'}}</view>
       <view class="title">{{detail.title}}</view>
       <view class="author-row">
-        <image wx:if="{{detail.avatarUrl}}" class="avatar" src="{{detail.avatarUrl}}" mode="aspectFill"></image>
-        <view wx:else class="avatar avatar-placeholder">羽</view>
         <view class="author-main">
-          <view class="author-name">{{detail.nickname || '球友'}}</view>
           <view class="meta">
+            <text>{{detail.nickname || '球友'}}</text>
             <text>◉ {{detail.viewCount || 0}}</text>
             <text>☰ {{detail.commentCount || 0}}</text>
             <text>赞 {{detail.likeCount || 0}}</text>
-            <text>{{detail.updatedAt || ''}}</text>
+            <text>{{detail.updatedAt || 'no time here'}}</text>
           </view>
         </view>
       </view>

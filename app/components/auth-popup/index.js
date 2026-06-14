@@ -5,7 +5,10 @@ Component({
   properties: {
     visible: {
       type: Boolean,
-      value: false
+      value: false,
+      observer(value) {
+        this.setTabBarHidden(Boolean(value));
+      }
     }
   },
 
@@ -13,8 +16,34 @@ Component({
     loading: false
   },
 
+  lifetimes: {
+    attached() {
+      if (this.data.visible) {
+        this.setTabBarHidden(true);
+      }
+    },
+
+    detached() {
+      this.setTabBarHidden(false);
+    }
+  },
+
   methods: {
+    setTabBarHidden(hidden) {
+      const action = hidden ? wx.hideTabBar : wx.showTabBar;
+      if (typeof action === 'function') {
+        action({ animation: false, fail() {} });
+      }
+      const pages = getCurrentPages();
+      const current = pages[pages.length - 1];
+      const tabBar = current && typeof current.getTabBar === 'function' ? current.getTabBar() : null;
+      if (tabBar) {
+        tabBar.setData({ hidden });
+      }
+    },
+
     onCancel() {
+      this.setTabBarHidden(false);
       this.triggerEvent('cancel');
     },
 
@@ -37,6 +66,7 @@ Component({
               }
               saveLogin(token, userInfo);
               this.setData({ loading: false });
+              this.setTabBarHidden(false);
               this.triggerEvent('success', { token, userInfo });
             })
             .catch((error) => this.finishLogin(error.msg || '登录失败，请稍后重试'));

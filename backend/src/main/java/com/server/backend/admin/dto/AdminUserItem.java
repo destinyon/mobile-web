@@ -7,6 +7,7 @@ public record AdminUserItem(
         String nickname,
         String avatarUrl,
         String phone,
+        String email,
         String role,
         String status,
         int postCount,

@@ -49,6 +49,7 @@ function formatDate(value?: string): string {
         </section>
 
         <dl class="detail-meta">
+          <div><dt>邮箱</dt><dd>{{ detail.email || '-' }}</dd></div>
           <div><dt>手机号</dt><dd>{{ detail.phone || '-' }}</dd></div>
           <div><dt>性别</dt><dd>{{ detail.gender || '-' }}</dd></div>
           <div><dt>年龄</dt><dd>{{ detail.age ?? '-' }}</dd></div>

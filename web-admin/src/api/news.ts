@@ -8,7 +8,8 @@ import type {
   NewsDetail,
   NewsSyncResult,
   NewsSummary,
-  PageResult
+  PageResult,
+  PostDetail
 } from '../types/api';
 
 export interface ListAdminNewsParams {
@@ -41,6 +42,10 @@ export function getAdminSummary(): Promise<AdminSummary> {
 
 export function getAdminNewsDetail(id: number): Promise<NewsDetail> {
   return apiRequest<NewsDetail>(`/api/admin/news/${id}`);
+}
+
+export function getAdminPostDetail(id: number): Promise<PostDetail> {
+  return apiRequest<PostDetail>(`/api/admin/posts/${id}`);
 }
 
 export function getAdminNewsRankings(limit = 10): Promise<AdminNewsRankingItem[]> {

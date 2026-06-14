@@ -14,6 +14,10 @@
         <text>{{profile.nickname || profile.nickName || '未登录球友'}}</text>
       </view>
       <view class="info-cell">
+        <text class="info-icon">@</text>
+        <text>{{profile.email || '邮箱'}}</text>
+      </view>
+      <view class="info-cell">
         <text class="info-icon">📱</text>
         <text>{{profile.mobile || profile.phone || 'xxxxxxxxxx'}}</text>
       </view>

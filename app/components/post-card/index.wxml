@@ -6,7 +6,8 @@
       <view class="topic">{{item.categoryName || item.topicName || '球友社区'}}</view>
       <view class="status">{{item.status === 'PUBLISHED' ? '已发布' : item.status || ''}}</view>
     </view>
-    <view class="title">{{item.title}}</view>
+    <rich-text wx:if="{{item.highlightedTitle}}" class="title" nodes="{{item.highlightedTitle}}"></rich-text>
+    <view wx:else class="title">{{item.title}}</view>
     <view class="meta">
       <text>浏览 {{item.viewCount || 0}}</text>
       <text>点赞 {{item.likeCount || 0}}</text>

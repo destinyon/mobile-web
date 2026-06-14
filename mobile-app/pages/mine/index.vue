@@ -1,0 +1,308 @@
+<template>
+  <view class="page mine-page with-tabbar">
+    <view class="brand-bar mine-brand">
+      <view class="brand-title"><text class="brand-mark">羽</text>羽球在线</view>
+    </view>
+
+    <view class="profile-panel">
+      <view class="profile-left" @tap="ensureLogin">
+        <image
+          v-if="profile.avatarUrl || profile.avatar"
+          class="avatar"
+          :src="profile.avatarUrl || profile.avatar"
+          mode="aspectFill"
+        />
+        <view v-else class="avatar avatar-placeholder">羽</view>
+      </view>
+      <view class="profile-info">
+        <view class="info-cell">
+          <text class="info-icon">♙</text>
+          <text>{{ profile.nickname || profile.nickName || '未登录球友' }}</text>
+        </view>
+        <view class="info-cell">
+          <text class="info-icon">@</text>
+          <text>{{ profile.email || '邮箱' }}</text>
+        </view>
+        <view class="info-cell">
+          <text class="info-icon">📱</text>
+          <text>{{ profile.mobile || profile.phone || 'xxxxxxxxxx' }}</text>
+        </view>
+        <view class="info-cell">
+          <text class="info-icon">▣</text>
+          <text>{{ profile.age ? `${profile.age}岁` : '年龄' }}</text>
+        </view>
+        <view class="info-cell">
+          <text class="info-icon">✎</text>
+          <text>{{ profile.playYears || profile.playYears === 0 ? `${profile.playYears}年` : '球龄' }}</text>
+        </view>
+        <view class="info-cell">
+          <text class="info-icon">⚥</text>
+          <text>{{ profile.gender || '性别' }}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="mine-section-title">高级功能：</view>
+    <view class="quick-grid">
+      <view class="quick-item" @tap="goPage('/pages/mine/favorites')">
+        <view class="quick-icon">★</view>
+        <view class="quick-text">收藏</view>
+      </view>
+      <view class="quick-item" @tap="goPage('/pages/mine/comments')">
+        <view class="quick-icon">▣</view>
+        <view class="quick-text">评论</view>
+      </view>
+      <view class="quick-item" @tap="goPage('/pages/mine/history')">
+        <view class="quick-icon">↺</view>
+        <view class="quick-text">浏览记录</view>
+      </view>
+      <view class="quick-item" @tap="goPage('/pages/mine/posts')">
+        <view class="quick-icon">▤</view>
+        <view class="quick-text">我的投稿</view>
+      </view>
+    </view>
+
+    <view class="mine-section-title">其他服务：</view>
+    <view class="service-list">
+      <view class="service-item" @tap="goPage('/pages/mine/profile')">
+        <view class="service-icon">♙</view>
+        <view class="service-text">修改资料</view>
+        <view class="service-arrow">›</view>
+      </view>
+      <view class="service-item" @tap="goSettings">
+        <view class="service-icon">⚙</view>
+        <view class="service-text">设置</view>
+        <view class="service-arrow">›</view>
+      </view>
+    </view>
+
+    <view v-if="error" class="state-box" @tap="loadProfile">{{ error }}，点击重试</view>
+    <app-tab-bar :selected="2" />
+  </view>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
+import AppTabBar from '../../components/app-tab-bar/app-tab-bar.vue';
+import { api } from '../../utils/api';
+import { getToken, isAuthError } from '../../utils/auth';
+
+const loggedIn = ref(false);
+const profile = ref({});
+const error = ref('');
+
+function goLogin() {
+  uni.navigateTo({ url: '/pages/login/index' });
+}
+
+function ensureLogin() {
+  if (!loggedIn.value) {
+    goLogin();
+    return;
+  }
+  uni.navigateTo({ url: '/pages/mine/profile' });
+}
+
+function goPage(url) {
+  if (!loggedIn.value) {
+    goLogin();
+    return;
+  }
+  uni.navigateTo({ url });
+}
+
+function resetProfile() {
+  profile.value = {};
+  error.value = '';
+}
+
+async function loadProfile() {
+  error.value = '';
+  try {
+    const profileData = await api.getProfile();
+    profile.value = profileData || {};
+    uni.setStorageSync('userInfo', profile.value);
+  } catch (err) {
+    if (isAuthError(err)) {
+      resetProfile();
+      return;
+    }
+    error.value = err.msg || '资料加载失败';
+  }
+}
+
+function goSettings() {
+  uni.navigateTo({ url: '/pages/mine/settings' });
+}
+
+onShow(() => {
+  if (uni.hideTabBar) {
+    uni.hideTabBar({ animation: false });
+  }
+  loggedIn.value = !!getToken();
+  if (loggedIn.value) {
+    profile.value = uni.getStorageSync('userInfo') || {};
+    loadProfile();
+  } else {
+    resetProfile();
+  }
+});
+</script>
+
+<style scoped>
+.mine-brand {
+  margin-bottom: 24rpx;
+}
+
+.profile-panel {
+  display: grid;
+  grid-template-columns: 126rpx 1fr;
+  gap: 28rpx;
+  align-items: center;
+  padding: 8rpx 0 18rpx;
+  border-bottom: 2rpx solid #b8c5b1;
+}
+
+.profile-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 112rpx;
+  width: 112rpx;
+  height: 112rpx;
+  border: 2rpx solid #172117;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #dff5c9;
+}
+
+.avatar-placeholder {
+  color: #172117;
+  font-size: 46rpx;
+  font-weight: 900;
+}
+
+.profile-info {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));;
+  gap: 18rpx 22rpx;
+  color: #172117;
+  font-size: 27rpx;
+  font-weight: 800;
+}
+
+.info-cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 12rpx;
+}
+
+.info-cell text:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.info-icon {
+  flex: 0 0 34rpx;
+  color: #172117;
+  font-size: 30rpx;
+  line-height: 1;
+  text-align: center;
+}
+
+.mine-section-title {
+  margin: 18rpx 0 10rpx;
+  color: #21638a;
+  font-size: 28rpx;
+  font-weight: 900;
+  text-decoration: underline;
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 20rpx 0 22rpx;
+  border-bottom: 2rpx solid #b8c5b1;
+}
+
+.quick-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  color: #2b7f56;
+  font-size: 22rpx;
+  font-weight: 800;
+}
+
+.quick-icon {
+  position: relative;
+  color: #0f1710;
+  font-size: 46rpx;
+  line-height: 1;
+}
+
+.quick-icon::after {
+  content: "+";
+  position: absolute;
+  top: -8rpx;
+  right: -12rpx;
+  width: 18rpx;
+  height: 18rpx;
+  border: 2rpx solid #2a79bd;
+  border-radius: 50%;
+  background: #e7f6ff;
+  color: #2a79bd;
+  font-size: 16rpx;
+  line-height: 16rpx;
+  text-align: center;
+}
+
+.quick-text {
+  line-height: 1;
+}
+
+.service-list {
+  border-top: 2rpx solid #d6dfcf;
+}
+
+.service-item {
+  display: flex;
+  align-items: center;
+  min-height: 72rpx;
+  border-bottom: 2rpx solid #d6dfcf;
+  color: #172117;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.service-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58rpx;
+  color: #172117;
+  font-size: 38rpx;
+}
+
+.service-text {
+  flex: 1;
+}
+
+.service-arrow {
+  color: #65705f;
+  font-size: 54rpx;
+  line-height: 1;
+}
+</style>

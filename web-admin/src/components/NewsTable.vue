@@ -25,7 +25,7 @@ function formatDate(value: string): string {
     <table class="admin-table news-table">
       <thead>
         <tr>
-          <th>文章</th>
+          <th>新闻</th>
           <th>分类</th>
           <th>作者</th>
           <th>浏览</th>
@@ -39,7 +39,7 @@ function formatDate(value: string): string {
           <td colspan="7" class="table-state">加载中</td>
         </tr>
         <tr v-else-if="items.length === 0">
-          <td colspan="7" class="table-state">暂无文章</td>
+          <td colspan="7" class="table-state">暂无新闻</td>
         </tr>
         <tr v-for="item in items" v-else :key="item.id">
           <td class="title-cell">
@@ -65,7 +65,7 @@ function formatDate(value: string): string {
               <button type="button" class="icon-action" title="查看详情" @click="$emit('view', item)">
                 <Eye :size="16" />
               </button>
-              <button type="button" class="icon-action danger" title="下架文章" @click="$emit('delete', item)">
+              <button type="button" class="icon-action danger" title="下架新闻" @click="$emit('delete', item)">
                 <Trash2 :size="16" />
               </button>
             </div>

@@ -17,6 +17,9 @@
     <view class="field-label">昵称</view>
     <input class="field" value="{{form.nickname}}" maxlength="80" placeholder="填写昵称" bindinput="onField" data-key="nickname" />
 
+    <view class="field-label">邮箱</view>
+    <view class="field readonly-field">{{form.email || '未绑定邮箱'}}</view>
+
     <view class="field-label">手机号</view>
     <input class="field" value="{{form.phone}}" maxlength="40" placeholder="可选" bindinput="onField" data-key="phone" />
 

@@ -14,6 +14,7 @@ import com.server.backend.news.dto.NewsDetail;
 import com.server.backend.news.dto.NewsSummary;
 import com.server.backend.news.netease.NeteaseNewsSyncResult;
 import com.server.backend.news.netease.service.NeteaseNewsSyncService;
+import com.server.backend.post.dto.PostDetail;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +61,14 @@ public class AdminController {
             @PathVariable long id) {
         requireAdmin(authorization);
         return ApiResponse.ok(adminDashboardService.newsDetail(id));
+    }
+
+    @GetMapping("/posts/{id}")
+    public ApiResponse<PostDetail> postDetail(
+            @RequestHeader("Authorization") String authorization,
+            @PathVariable long id) {
+        requireAdmin(authorization);
+        return ApiResponse.ok(adminDashboardService.postDetail(id));
     }
 
     @GetMapping("/news/rankings")

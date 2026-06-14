@@ -49,6 +49,7 @@ class AdminControllerIntegrationTest {
         jdbcTemplate.update("DELETE FROM likes");
         jdbcTemplate.update("DELETE FROM posts");
         jdbcTemplate.update("DELETE FROM news");
+        jdbcTemplate.update("DELETE FROM topics");
         jdbcTemplate.update("DELETE FROM users");
         jdbcTemplate.update("DELETE FROM categories");
 
@@ -57,11 +58,17 @@ class AdminControllerIntegrationTest {
                 VALUES(1, '赛事', 1, 'ACTIVE'), (2, '装备', 2, 'ACTIVE')
                 """);
         jdbcTemplate.update("""
+                INSERT INTO topics(id, name, description, sort_no, status)
+                VALUES(1, '璧涗簨', 'User post topic', 1, 'ACTIVE')
+                """);
+        jdbcTemplate.update("""
                 INSERT INTO users(id, openid, nickname, avatar_url, phone, age, play_years, gender, role, status)
                 VALUES
                 (1, 'user-openid', '普通用户', '', '17700000000', 20, 3, '女', 'USER', 'ACTIVE'),
                 (2, 'admin-openid', '管理员', '', '18800000000', 30, 10, '男', 'ADMIN', 'ACTIVE')
                 """);
+        jdbcTemplate.update("UPDATE users SET email = ? WHERE id = ?", "user@example.test", 1);
+        jdbcTemplate.update("UPDATE users SET email = ? WHERE id = ?", "admin@example.test", 2);
         jdbcTemplate.update("""
                 INSERT INTO news(id, category_id, user_id, title, cover_url, summary, author, content,
                     view_count, like_count, favorite_count, comment_count, status)
@@ -80,6 +87,20 @@ class AdminControllerIntegrationTest {
         jdbcTemplate.update("""
                 INSERT INTO comments(id, target_type, target_id, user_id, content, status)
                 VALUES(40, 'NEWS', 10, 1, '评论内容', 'PUBLISHED')
+                """);
+        jdbcTemplate.update("""
+                UPDATE posts
+                SET title = 'User ranking post',
+                    content = 'Post content',
+                    view_count = 50,
+                    like_count = 20,
+                    favorite_count = 1,
+                    comment_count = 1
+                WHERE id = 30
+                """);
+        jdbcTemplate.update("""
+                INSERT INTO comments(id, target_type, target_id, user_id, content, status)
+                VALUES(41, 'POST', 30, 1, 'Post comment', 'PUBLISHED')
                 """);
         jdbcTemplate.update("""
                 INSERT INTO likes(user_id, target_type, target_id)
@@ -139,8 +160,14 @@ class AdminControllerIntegrationTest {
                 .andExpect(jsonPath("$.data.publishedNewsCount").value(2))
                 .andExpect(jsonPath("$.data.offlineNewsCount").value(1))
                 .andExpect(jsonPath("$.data.postCount").value(1))
-                .andExpect(jsonPath("$.data.commentCount").value(1))
+                .andExpect(jsonPath("$.data.commentCount").value(2))
+                .andExpect(jsonPath("$.data.totalViews").value(96))
+                .andExpect(jsonPath("$.data.totalLikes").value(29))
+                .andExpect(jsonPath("$.data.totalFavorites").value(12))
                 .andExpect(jsonPath("$.data.categoryStats", hasSize(2)))
+                .andExpect(jsonPath("$.data.categoryStats[0].newsCount").value(1))
+                .andExpect(jsonPath("$.data.categoryStats[0].postCount").value(1))
+                .andExpect(jsonPath("$.data.categoryStats[0].contentCount").value(2))
                 .andExpect(jsonPath("$.data.categoryStats[1].categoryName").value("装备"));
 
         mockMvc.perform(get("/api/admin/news/rankings")
@@ -149,8 +176,23 @@ class AdminControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data", hasSize(greaterThanOrEqualTo(2))))
-                .andExpect(jsonPath("$.data[0].id").value(11))
-                .andExpect(jsonPath("$.data[0].heatScore").value(11));
+                .andExpect(jsonPath("$.data[0].targetType").value("POST"))
+                .andExpect(jsonPath("$.data[0].id").value(30))
+                .andExpect(jsonPath("$.data[0].heatScore").value(21));
+    }
+
+    @Test
+    void adminPostDetailCanReadPublishedUserPostWithoutIncreasingViews() throws Exception {
+        mockMvc.perform(get("/api/admin/posts/30").header("Authorization", adminToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.title").value("User ranking post"))
+                .andExpect(jsonPath("$.data.topicName").value("璧涗簨"))
+                .andExpect(jsonPath("$.data.viewCount").value(50))
+                .andExpect(jsonPath("$.data.content").value("Post content"));
+
+        Integer viewCount = jdbcTemplate.queryForObject("SELECT view_count FROM posts WHERE id = 30", Integer.class);
+        assertThat(viewCount).isEqualTo(50);
     }
 
     @Test
@@ -164,8 +206,9 @@ class AdminControllerIntegrationTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.items", hasSize(1)))
                 .andExpect(jsonPath("$.data.items[0].nickname").value("普通用户"))
+                .andExpect(jsonPath("$.data.items[0].email").value("user@example.test"))
                 .andExpect(jsonPath("$.data.items[0].postCount").value(1))
-                .andExpect(jsonPath("$.data.items[0].commentCount").value(1))
+                .andExpect(jsonPath("$.data.items[0].commentCount").value(2))
                 .andExpect(jsonPath("$.data.items[0].favoriteCount").value(2));
     }
 
@@ -176,10 +219,11 @@ class AdminControllerIntegrationTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.id").value(1))
                 .andExpect(jsonPath("$.data.nickname").value("普通用户"))
+                .andExpect(jsonPath("$.data.email").value("user@example.test"))
                 .andExpect(jsonPath("$.data.age").value(20))
                 .andExpect(jsonPath("$.data.playYears").value(3))
                 .andExpect(jsonPath("$.data.postCount").value(1))
-                .andExpect(jsonPath("$.data.commentCount").value(1))
+                .andExpect(jsonPath("$.data.commentCount").value(2))
                 .andExpect(jsonPath("$.data.favoriteCount").value(2))
                 .andExpect(jsonPath("$.data.likeCount").value(2));
     }

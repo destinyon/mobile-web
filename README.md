@@ -5,9 +5,9 @@
 ## Modules
 
 - `backend/`: REST API、H2 文件数据库、OSS 上传、微信登录、网易羽毛球新闻同步和后台接口。
-- `app/`: 原生微信小程序页面、组件和接口服务。
+- `wechat-app/`: 原生微信小程序页面、组件和接口服务。
 - `docs/`: 接口文档和迭代说明。
-
+- `mobile-web/`: 移动端 Web 版本。
 ## Backend
 
 ```powershell
@@ -23,6 +23,6 @@ mvn spring-boot:run
 
 ## Mini Program
 
-在微信开发者工具中打开 `app/`。小程序 AppID 位于 `app/project.config.json`。
+在微信开发者工具中打开 `wechat-app/`。小程序 AppID 位于 `wechat-app/project.config.json`。
 
-小程序后端地址在 `app/utils/constants.js` 中配置。
+小程序后端地址在 `wechat-app/utils/constants.js` 中配置。
